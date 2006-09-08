@@ -1,0 +1,30 @@
+<?xml version="1.0" ?>
+<!DOCTYPE bulletml SYSTEM "http://www.asahi-net.or.jp/~cs8k-cyu/bulletml/bulletml.dtd">
+
+<bulletml type="vertical" xmlns="http://www.asahi-net.or.jp/~cs8k-cyu/bulletml">
+
+<action label="top">
+	<repeat>
+	<times>4+($rank*8)</times>
+		<action>
+			<fire>
+				<bulletRef label="aimbullet"/>
+			</fire>
+		</action>
+		<wait>8-$rank*4</wait>
+	</repeat>
+</action>
+
+<bullet label="aimbullet">
+	<direction type="aim">0</direction>
+	<speed>12.0+$rank*12</speed>
+	<action>
+		<changeSpeed>
+			<speed>4.0+$rank*8</speed>
+			<term>30</term>
+		</changeSpeed>
+		<wait>30</wait>
+	</action>
+</bullet>
+
+</bulletml>
