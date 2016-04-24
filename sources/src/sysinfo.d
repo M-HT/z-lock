@@ -7,9 +7,9 @@
 */
 
 private	import	std.stdio;
-private	import	std.stream;
 private	import	std.string;
 private	import	std.math;
+private	import	std.conv;
 private	import	SDL;
 private	import	opengl;
 private	import	util_sdl;
@@ -98,7 +98,7 @@ void TSKsysinfoDraw(int id)
 	float z;
 
 	/* score */
-	str_buf  = "SCORE ";
+	str_buf  = "SCORE ".dup;
 	if(score < 100000000) str_buf ~= "0";
 	if(score < 10000000 ) str_buf ~= "0";
 	if(score < 1000000  ) str_buf ~= "0";
@@ -107,7 +107,7 @@ void TSKsysinfoDraw(int id)
 	if(score < 1000     ) str_buf ~= "0";
 	if(score < 100      ) str_buf ~= "0";
 	if(score < 10       ) str_buf ~= "0";
-	str_buf ~= toString(score);
+	str_buf ~= to!string(score);
 	glColor3f(1.0f,1.0f,1.0f);
 	glbfPrintBegin();
     px = -(SCREEN_SX / 2) + 6;
@@ -122,14 +122,14 @@ void TSKsysinfoDraw(int id)
 	tmin  = time / ONE_MIN;
 	tsec  = time / ONE_SEC % ONE_SEC;
 	tmsec = ((time % ONE_SEC) * 100 / ONE_SEC);
-	str_buf  = "TIME ";
-	str_buf ~= toString(tmin);
+	str_buf  = "TIME ".dup;
+	str_buf ~= to!string(tmin);
 	str_buf ~= ":";
 	if(tsec < 10) str_buf ~= "0";
-	str_buf ~= toString(tsec);
+	str_buf ~= to!string(tsec);
 	str_buf ~= ":";
 	if(tmsec < 10) str_buf ~= "0";
-	str_buf ~= toString(tmsec);
+	str_buf ~= to!string(tmsec);
 	glbfPrintBegin();
     px = +(SCREEN_SX / 2) - glbfGetWidth(font, str_buf, 0.75f) - 4;
     py = +(SCREEN_SY / 2) - 16;
@@ -147,19 +147,19 @@ void TSKsysinfoDraw(int id)
 			case	GMODE_ORIGINAL:
 			case	GMODE_HIDDEN:
 				int ret = stg_num;
-				str_buf = "SECTOR-";
+				str_buf = "SECTOR-".dup;
 				if(stg_num > 999){
 					ret %= 1000;
 					if(ret < 100) str_buf ~= "0";
 					if(ret < 10 ) str_buf ~= "0";
 				}
-				str_buf ~= toString(ret);
+				str_buf ~= to!string(ret);
 				break;
 			case	GMODE_SCORE:
-				str_buf = " SCORE-ATK";
+				str_buf = " SCORE-ATK".dup;
 				break;
 			case	GMODE_TIME:
-				str_buf = "  TIME-ATK";
+				str_buf = "  TIME-ATK".dup;
 				break;
 			default:
 				assert(false);
@@ -172,29 +172,29 @@ void TSKsysinfoDraw(int id)
 				case	GMODE_ORIGINAL:
 				case	GMODE_HIDDEN:
 					int ret = stg_num;
-					str_buf = "SECTOR-";
+					str_buf = "SECTOR-".dup;
 					if(stg_num > 999){
 						ret %= 1000;
 						if(ret < 100) str_buf ~= "0";
 						if(ret < 10 ) str_buf ~= "0";
 					}
-					str_buf ~= toString(ret);
+					str_buf ~= to!string(ret);
 					break;
 				case	GMODE_SCORE:
-					str_buf = " SCORE-ATK";
+					str_buf = " SCORE-ATK".dup;
 					break;
 				case	GMODE_TIME:
-					str_buf = "  TIME-ATK";
+					str_buf = "  TIME-ATK".dup;
 					break;
 				default:
 					assert(false);
 			}
 		}else if(TskBuf[id].num == 2){
-			str_buf = "REPLAY";
+			str_buf = "REPLAY".dup;
 		}else if(TskBuf[id].num == 4){
-			str_buf = "EXIT - SHOT KEY";
+			str_buf = "EXIT - SHOT KEY".dup;
 		}else{
-			str_buf = "";
+			str_buf = "".dup;
 		}
 	}
     px = +(SCREEN_SX / 2) - glbfGetWidth(font, str_buf, 0.75f) - 4;
@@ -208,7 +208,7 @@ void TSKsysinfoDraw(int id)
     px = +83.0 - 2.0f;
     py = cast(float)(-(SCREEN_SY / 2) + 12);
 	int tmp;
-	str_buf = "LEVEL-";
+	str_buf = "LEVEL-".dup;
 	glbfPrintBegin();
     glbfTranslate(px, py);
     glbfScale(0.75f, 0.50f);
@@ -219,7 +219,7 @@ void TSKsysinfoDraw(int id)
     py -= 1.0f;
 	if(ship_special == SHIP_SPECIAL_NONE) tmp = cast(int)(ship_level * 100.0f);
 	else								  tmp = cast(int)(ship_special * 100.0f);
-	str_buf = toString(tmp/100);
+	str_buf = to!string(tmp/100).dup;
 	glbfPrintBegin();
     glbfTranslate(px, py);
     glbfScale(1.00f, 0.75f);
@@ -228,10 +228,10 @@ void TSKsysinfoDraw(int id)
 
     px  = +156.5;
     py += 1.0f;
-	str_buf = ".";
+	str_buf = ".".dup;
 	tmp %= 100;
 	if(tmp < 10 ) str_buf ~= "0";
-	str_buf ~= toString(tmp);
+	str_buf ~= to!string(tmp);
 	glbfPrintBegin();
     glbfTranslate(px, py);
     glbfScale(0.75f, 0.50f);
@@ -391,8 +391,8 @@ void TSKspgauge(int id)
 			TskBuf[id].fp_draw = &TSKspgaugeDraw;
 			TskBuf[id].wrk1 = SHIP_SPECIAL_MAX;
 			TskBuf[id].wrk2 = ship_spgauge;
-			TskBuf[id].alpha = 0.0f; 
-			TskBuf[id].cnt = 0; 
+			TskBuf[id].alpha = 0.0f;
+			TskBuf[id].cnt = 0;
 			TskBuf[id].step++;
 			break;
 		case	1:
@@ -468,7 +468,7 @@ void TSKspgaugeDraw(int id)
 			float px,py;
 			px = TskBuf[id].px + 10.0f;
 			py = TskBuf[id].py - 9.0f;
-			str_buf = "OVER HEAT!!";
+			str_buf = "OVER HEAT!!".dup;
 			glbfPrintBegin();
 		    glbfTranslate(px, py);
 		    glbfScale(1.50f, 0.50f);
@@ -533,7 +533,7 @@ void TSKstgInfoDraw(int id)
 
 	glColor3f(1.0f,1.0f,1.0f);
 	glbfPrintBegin();
-	str_buf = "START!!";
+	str_buf = "START!!".dup;
 	px  = -glbfGetWidth(font, str_buf, 1.0f);
 	px /= 2.0f;
 	py  = +0.0f;
@@ -549,7 +549,7 @@ void TSKclrInfo(int id)
 		case	0:
 			TskBuf[id].body_ofs.length = 6;
 			float px;
-			str_buf = "- CLEAR  REPORT -";
+			str_buf = "- CLEAR  REPORT -".dup;
 			px  = -glbfGetWidth(font, str_buf, 1.0f) - (SCREEN_SX / 2);
 			TskBuf[id].body_ofs[0][X] = px;
 			TskBuf[id].body_ofs[0][Y] = +(SCREEN_SY / 2) - 48;
@@ -563,6 +563,18 @@ void TSKclrInfo(int id)
 			TskBuf[id].body_ofs[4][Y] = +(SCREEN_SY / 2) - 64;
 			TskBuf[id].body_ofs[5][X] = -(SCREEN_SX / 2) + 6;
 			TskBuf[id].body_ofs[5][Y] = +(SCREEN_SY / 2) - 80;
+			TskBuf[id].body_ofs[0][Z] = 0.0f;
+			TskBuf[id].body_ofs[0][W] = 0.0f;
+			TskBuf[id].body_ofs[1][Z] = 0.0f;
+			TskBuf[id].body_ofs[1][W] = 0.0f;
+			TskBuf[id].body_ofs[2][Z] = 0.0f;
+			TskBuf[id].body_ofs[2][W] = 0.0f;
+			TskBuf[id].body_ofs[3][Z] = 0.0f;
+			TskBuf[id].body_ofs[3][W] = 0.0f;
+			TskBuf[id].body_ofs[4][Z] = 0.0f;
+			TskBuf[id].body_ofs[4][W] = 0.0f;
+			TskBuf[id].body_ofs[5][Z] = 0.0f;
+			TskBuf[id].body_ofs[5][W] = 0.0f;
 			TskBuf[id].fp_draw = &TSKclrInfoDraw;
 			TskBuf[id].wait = 15;
 			TskBuf[id].step++;
@@ -631,7 +643,7 @@ void TSKclrInfoDraw(int id)
 
 	glColor3f(1.0f,1.0f,1.0f);
 	glbfPrintBegin();
-	str_buf = "- CLEAR  REPORT -";
+	str_buf = "- CLEAR  REPORT -".dup;
 	px  = TskBuf[id].body_ofs[0][X];
 	py  = TskBuf[id].body_ofs[0][Y];
     glbfTranslate(px, py);
@@ -639,13 +651,13 @@ void TSKclrInfoDraw(int id)
 	glbfPrint(font, str_buf);
 	glbfPrintEnd();
 	glbfPrintBegin();
-	str_buf = "DEST BONUS ";
+	str_buf = "DEST BONUS ".dup;
 	if(dest_bonus < 100000) str_buf ~= "0";
 	if(dest_bonus < 10000 ) str_buf ~= "0";
 	if(dest_bonus < 1000  ) str_buf ~= "0";
 	if(dest_bonus < 100   ) str_buf ~= "0";
 	if(dest_bonus < 10    ) str_buf ~= "0";
-	str_buf ~= toString(dest_bonus);
+	str_buf ~= to!string(dest_bonus);
 	px  = TskBuf[id].body_ofs[1][X];
 	py  = TskBuf[id].body_ofs[1][Y];
     glbfTranslate(px, py);
@@ -653,13 +665,13 @@ void TSKclrInfoDraw(int id)
 	glbfPrint(font, str_buf);
 	glbfPrintEnd();
 	glbfPrintBegin();
-	str_buf = "TIME BONUS ";
+	str_buf = "TIME BONUS ".dup;
 	if(time_bonus < 100000) str_buf ~= "0";
 	if(time_bonus < 10000 ) str_buf ~= "0";
 	if(time_bonus < 1000  ) str_buf ~= "0";
 	if(time_bonus < 100   ) str_buf ~= "0";
 	if(time_bonus < 10    ) str_buf ~= "0";
-	str_buf ~= toString(time_bonus);
+	str_buf ~= to!string(time_bonus);
 	px  = TskBuf[id].body_ofs[2][X];
 	py  = TskBuf[id].body_ofs[2][Y];
     glbfTranslate(px, py);
@@ -689,7 +701,7 @@ void TSKgameoverDraw(int id)
 
 	glColor3f(1.0f,1.0f,1.0f);
 	glbfPrintBegin();
-	str_buf = "GAME OVER";
+	str_buf = "GAME OVER".dup;
 	px  = -glbfGetWidth(font, str_buf, 1.5f);
 	px /= 2.0f;
 	py  = +0.0f;
@@ -721,7 +733,7 @@ void TSKcompleteDraw(int id)
 
 	glColor3f(1.0f,1.0f,1.0f);
 	glbfPrintBegin();
-	str_buf = "COMPLETE!!";
+	str_buf = "COMPLETE!!".dup;
 	px  = -glbfGetWidth(font, str_buf, 1.5f);
 	px /= 2.0f;
 	py  = +0.0f;

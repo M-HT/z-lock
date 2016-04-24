@@ -427,7 +427,7 @@ extern (C) {
  * \sa Sound_FreeSample
  */
 	Sound_Sample * Sound_NewSample(SDL_RWops *rw,
-								   char *ext,
+								   const char *ext,
 								   Sound_AudioInfo *desired,
 								   Uint32 bufferSize);
 
@@ -458,7 +458,7 @@ extern (C) {
  * \sa Sound_Rewind
  * \sa Sound_FreeSample
  */
-	Sound_Sample * Sound_NewSampleFromFile(char *fname,
+	Sound_Sample * Sound_NewSampleFromFile(const char *fname,
 										   Sound_AudioInfo *desired,
 										   Uint32 bufferSize);
 

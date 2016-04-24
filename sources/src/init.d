@@ -7,7 +7,6 @@
 */
 
 private	import	std.stdio;
-private	import	std.stream;
 private	import	std.file;
 private	import	util_sdl;
 private	import	util_snd;
@@ -79,33 +78,29 @@ void configINIT()
 	repatk_mode = 0;
 	reptime_mode = 0;
 
-	auto File fd = new File;
-	if(exists("config.dat")){
-		initialized = 0;
+	scope File fd;
+	try {
 		fd.open("config.dat");
-		fd.read(game_ver);
-		fd.read(game_level);
-		fd.read(vol_se);
-		fd.read(vol_music);
-		fd.read(normal_max);
-		fd.read(concept_max);
-		if(game_ver > 0x0010) fd.read(original_max);
-		fd.read(time_mode);
-		fd.read(attack_mode);
-		fd.close();
-		if(game_ver != GAME_NOWVER) game_ver = GAME_NOWVER;
-	}else{
+		int read_data1[6];
+		int read_data2[1];
+		int read_data3[2];
+		fd.rawRead(read_data1);
+		if(read_data1[0] > 0x0010) fd.rawRead(read_data2);
+		fd.rawRead(read_data3);
+		initialized = 0;
+		game_ver = read_data1[0];
+		game_level = read_data1[1];
+		vol_se = read_data1[2];
+		vol_music = read_data1[3];
+		normal_max = read_data1[4];
+		concept_max = read_data1[5];
+		if(game_ver > 0x0010) original_max = read_data2[0];
+		time_mode = read_data3[0];
+		attack_mode = read_data3[1];
+	} catch (Exception e) {
 		initialized = 1;
-		fd.create("config.dat");
-		fd.write(game_ver);
-		fd.write(game_level);
-		fd.write(vol_se);
-		fd.write(vol_music);
-		fd.write(normal_max);
-		fd.write(concept_max);
-		fd.write(original_max);
-		fd.write(time_mode);
-		fd.write(attack_mode);
+		configSAVE();
+	} finally {
 		fd.close();
 	}
 
@@ -138,34 +133,30 @@ void configINIT()
 	int[] score_tmp;
 
 	if(exists("score.dat")){
-		score_tmp = cast(int[])read("score.dat");
+		score_tmp = cast(int[])std.file.read("score.dat");
 		for(int i = 0; i < high_score.length; i++){
 			for(int j = 0; j < high_score[i].length; j++){
 				high_score[i][j] = score_tmp[i*high_score[i].length+j];
 			}
 		}
 	}else{
-		write("score.dat", cast(void[])high_score);
+		std.file.write("score.dat", cast(void[])high_score);
 	}
 }
 
 void configSAVE()
 {
-	auto File fd = new File;
-	fd.create("config.dat");
-	fd.write(game_ver);
-	fd.write(game_level);
-	fd.write(vol_se);
-	fd.write(vol_music);
-	fd.write(normal_max);
-	fd.write(concept_max);
-	fd.write(original_max);
-	fd.write(time_mode);
-	fd.write(attack_mode);
-	fd.close();
+	scope File fd;
+	try {
+		fd.open("config.dat", "wb");
+		int write_data[9] = [game_ver, game_level, vol_se, vol_music, normal_max, concept_max, original_max, time_mode, attack_mode];
+		fd.rawWrite(write_data);
+	} finally {
+		fd.close();
+	}
 }
 
 void scoreSAVE()
 {
-	write("score.dat", cast(void[])high_score);
+	std.file.write("score.dat", cast(void[])high_score);
 }

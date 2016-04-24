@@ -3,9 +3,9 @@
 extern(C):
 
 /* Put a variable of the form "name=value" into the environment */
-int SDL_putenv(char *variable);
-int putenv(char* X) { return SDL_putenv(X); }
+int putenv(const char *variable);
+int SDL_putenv(const char *X) { return putenv(X); }
 
 /* Retrieve a variable named "name" from the environment */
-char *SDL_getenv(char *name);
-char *getenv(char* X) { return SDL_getenv(X); }
+char *getenv(const char *name);
+char *SDL_getenv(const char *X) { return getenv(X); }

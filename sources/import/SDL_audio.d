@@ -42,7 +42,7 @@ struct SDL_AudioSpec {
 	   Once the callback returns, the buffer will no longer be valid.
 	   Stereo samples are stored in a LRLRLR ordering.
 	*/
-	void (*callback)(void *userdata, Uint8 *stream, int len);
+	void function (void *userdata, Uint8 *stream, int len) callback;
 	void  *userdata;
 }
 
@@ -74,7 +74,7 @@ struct SDL_AudioCVT {
 	int    len_cvt;			/* Length of converted audio buffer */
 	int    len_mult;		/* buffer must be len*len_mult big */
 	double len_ratio; 	/* Given len, final size is len*len_ratio */
-	void (*filters[10])(SDL_AudioCVT *cvt, Uint16 format);
+	void function (SDL_AudioCVT *cvt, Uint16 format)[10] filters;
 	int filter_index;		/* Current audio conversion function */
 }
 
@@ -85,7 +85,7 @@ struct SDL_AudioCVT {
  * have a specific need to specify the audio driver you want to use.
  * You should normally use SDL_Init() or SDL_InitSubSystem().
  */
-int SDL_AudioInit(char *driver_name);
+int SDL_AudioInit(const char *driver_name);
 void SDL_AudioQuit();
 
 /* This function fills the given character buffer with the name of the
@@ -100,9 +100,9 @@ char *SDL_AudioDriverName(char *namebuf, int maxlen);
  * structure pointed to by 'obtained'.  If 'obtained' is NULL, the audio
  * data passed to the callback function will be guaranteed to be in the
  * requested format, and will be automatically converted to the hardware
- * audio format if necessary.  This function returns -1 if it failed 
+ * audio format if necessary.  This function returns -1 if it failed
  * to open the audio device, or couldn't set up the audio thread.
- * 
+ *
  * When filling in the desired audio spec structure,
  *  'desired->freq' should be the desired audio frequency in samples-per-second.
  *  'desired->format' should be the desired audio format.
@@ -128,7 +128,7 @@ char *SDL_AudioDriverName(char *namebuf, int maxlen);
  *     and SDL_UnlockAudio() in your code.
  *  'desired->userdata' is passed as the first parameter to your callback
  *     function.
- * 
+ *
  * The audio device starts out playing silence when it's opened, and should
  * be enabled for playing by calling SDL_PauseAudio(0) when you are ready
  * for your audio callback function to be called.  Since the audio driver
@@ -162,25 +162,25 @@ void SDL_PauseAudio(int pause_on);
  * that source if 'freesrc' is non-zero.  For example, to load a WAVE file,
  * you could do:
  *	SDL_LoadWAV_RW(SDL_RWFromFile("sample.wav", "rb"), 1, ...);
- * 
+ *
  * If this function succeeds, it returns the given SDL_AudioSpec,
  * filled with the audio data format of the wave data, and sets
  * 'audio_buf' to a malloc()'d buffer containing the audio data,
  * and sets 'audio_len' to the length of that audio buffer, in bytes.
- * You need to free the audio buffer with SDL_FreeWAV() when you are 
+ * You need to free the audio buffer with SDL_FreeWAV() when you are
  * done with it.
- * 
- * This function returns NULL and sets the SDL error message if the 
- * wave file cannot be opened, uses an unknown data format, or is 
+ *
+ * This function returns NULL and sets the SDL error message if the
+ * wave file cannot be opened, uses an unknown data format, or is
  * corrupt.  Currently raw and MS-ADPCM WAVE files are supported.
  */
 SDL_AudioSpec *SDL_LoadWAV_RW(SDL_RWops *src, int freesrc,
 		 SDL_AudioSpec *spec, Uint8 **audio_buf, Uint32 *audio_len);
 
 /* Compatibility convenience function -- loads a WAV from a file */
-SDL_AudioSpec *SDL_LoadWAV(char* file, SDL_AudioSpec* spec,
+SDL_AudioSpec *SDL_LoadWAV(const char *file, SDL_AudioSpec* spec,
 		Uint8 **audio_buf, Uint32 *audio_len)
-{		
+{
 	return SDL_LoadWAV_RW(SDL_RWFromFile(file, "rb"), 1, spec,
 		audio_buf, audio_len);
 }

@@ -102,7 +102,7 @@ int initVIDEO()
     resizedSDL(width, height);
 	SDL_ShowCursor(SDL_DISABLE);
 
-	SDL_WM_SetCaption(PROJECT_NAME, null);
+	SDL_WM_SetCaption(std.string.toStringz(PROJECT_NAME), null);
 
 	return	1;
 }
@@ -121,7 +121,7 @@ void closeVIDEO()
 	}
 }
 
-void readSDLtexture(char[] fname, int bank)
+void readSDLtexture(const char[] fname, int bank)
 {
 	offscreen[bank] = SDL_LoadBMP(toStringz(fname));
 	if(offscreen[bank]){

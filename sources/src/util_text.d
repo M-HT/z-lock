@@ -9,7 +9,6 @@
 private	import	std.stdio;
 private	import	std.string;
 private	import	std.math;
-private	import	std.stream;
 private	import	SDL;
 private	import	opengl;
 private	import	util_sdl;
@@ -23,7 +22,7 @@ struct TEXT {
 	int cnt;
 }
 
-void initTEXT(inout TEXT[] text, int cnt)
+void initTEXT(ref TEXT[] text, int cnt)
 {
 	text.length = cnt;
 	for(int i = 0; i < text.length; i++){
@@ -32,21 +31,21 @@ void initTEXT(inout TEXT[] text, int cnt)
 		text[i].len  = -1;
 		text[i].wait = 0;
 		text[i].cnt  = 0;
-		
+
 	}
 }
 
-void freeTEXT(inout TEXT[] text)
+void freeTEXT(ref TEXT[] text)
 {
 	text.length = 0;
 }
 
-void setTEXTstr(inout TEXT text, char[] str)
+void setTEXTstr(ref TEXT text, char[] str)
 {
 	text.str = str;
 }
 
-void setTEXTwait(inout TEXT text, int wait)
+void setTEXTwait(ref TEXT text, int wait)
 {
 	text.wait = wait;
 	text.cnt  = 0;
@@ -54,12 +53,12 @@ void setTEXTwait(inout TEXT text, int wait)
 		text.len  = -1;
 		text.step = 0;
 	}else{
-		text.len  = text.str.length;
+		text.len  = cast(int)(text.str.length);
 		text.step = 1;
 	}
 }
 
-char[] execTEXT(inout TEXT text)
+char[] execTEXT(ref TEXT text)
 {
 	if(text.str.length == 0){
 		return null;

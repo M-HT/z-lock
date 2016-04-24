@@ -108,7 +108,7 @@ void TSKmiddle02(int id)
 			TskBuf[id].alpha = 0.0f;
 			TskBuf[id].tx = TskBuf[id].px;
 			TskBuf[id].ty = (Rand() % 80) - (80.0f / 2.0f) - 224.0f;
-			float[XYZ] tpos;
+			float[XY] tpos;
 			TskBuf[id].body_org.length = enemy_poly.length;
 			for(int i = 0; i < enemy_poly.length; i++){
 				TskBuf[id].body_org[i] = enemy_poly[i] * 0.75f;

@@ -7,9 +7,9 @@
 */
 
 private	import	std.stdio;
+private	import	std.conv;
 private	import	std.string;
 private	import	std.math;
-private	import	std.random;
 private	import	SDL;
 private	import	opengl;
 private	import	util_sdl;
@@ -569,7 +569,7 @@ void TSKeshotDrawSimple(int id)
 	glBegin(GL_POINTS);
 	glVertex3f(getPointX(scr_pos[X] - TskBuf[id].px, TskBuf[id].pz),
 			   getPointY(scr_pos[Y] - TskBuf[id].py, TskBuf[id].pz),
-			   0.0f);											   
+			   0.0f);
 	glEnd();
 }
 
@@ -598,7 +598,7 @@ void TSKeshotDrawActive(int id)
 	glBegin(GL_POINTS);
 	glVertex3f(getPointX(scr_pos[X] - TskBuf[id].px, TskBuf[id].pz),
 			   getPointY(scr_pos[Y] - TskBuf[id].py, TskBuf[id].pz),
-			   0.0f);											   
+			   0.0f);
 	glEnd();
 }
 
@@ -683,7 +683,7 @@ void TSKoption(int id)
 			TskBuf[id].rad_y = 8.0f;
 			TskBuf[id].alpha = 1.0f;
 			{
-				float[XYZ] tpos;
+				float[XY] tpos;
 				TskBuf[id].body_org.length = option_poly.length;
 				for(int i = 0; i < option_poly.length; i++){
 					TskBuf[id].body_org[i] = option_poly[i];
@@ -727,8 +727,8 @@ void TSKoption(int id)
 			break;
 
 		case	100:
-			effSetBrokenBody(id, TskBuf[id].body_org,0,TskBuf[id].body_ang.length,+0.0f,+0.0f,+3.0f,+3.0f);
-			effSetBrokenLine(id, TskBuf[id].body_org,0,TskBuf[id].body_ang.length,+0.0f,+0.0f,+3.0f,+3.0f);
+			effSetBrokenBody(id, TskBuf[id].body_org,0,cast(int)(TskBuf[id].body_ang.length),+0.0f,+0.0f,+3.0f,+3.0f);
+			effSetBrokenLine(id, TskBuf[id].body_org,0,cast(int)(TskBuf[id].body_ang.length),+0.0f,+0.0f,+3.0f,+3.0f);
 			TskBuf[id].step = -1;
 			break;
 
@@ -799,12 +799,9 @@ void TSKescore(int id)
 
 void TSKescoreDraw(int id)
 {
-	float[XYZ] pos;
 	float px,py;
-	float z;
 
-	str_buf  = "+";
-	str_buf ~= toString(TskBuf[id].cnt);
+	str_buf = "+".dup ~ to!string(TskBuf[id].cnt);
 	glColor4f(0.5f,1.0f,0.5f,1.0f);
 	glbfPrintBegin();
 	if(TskBuf[id].cnt < 10000){
@@ -1001,7 +998,7 @@ void EbulletVanish()
 
 float getTargetLength(int id, float tx, float ty)
 {
-	float len = 0;
+	float len;
 	float px, py;
 	float lpx,lpy;
 

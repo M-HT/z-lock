@@ -25,7 +25,7 @@
 extern(C):
 
 /* Public functions */
-void SDL_SetError(char *fmt, ...);
+void SDL_SetError(const char *fmt, ...);
 char * SDL_GetError();
 void SDL_ClearError();
 

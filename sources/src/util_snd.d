@@ -6,6 +6,7 @@
 	2003/12/02 jumpei isshiki
 */
 
+private	import	std.string;
 private	import	std.stdio;
 private	import	SDL;
 private	import	SDL_mixer;
@@ -91,15 +92,15 @@ void closeSND()
 	Mix_CloseAudio();
 }
 
-void loadSNDmusic(char[] name, int ch, int loops)
+void loadSNDmusic(const char[] name, int ch, int loops)
 {
 	if(!sound_use){
 		return;
 	}
 
-	char[] fileName = name ~ "\0";
+	const char[] fileName = name ~ "\0";
 
-	music[ch] = Mix_LoadMUS(fileName);
+	music[ch] = Mix_LoadMUS(std.string.toStringz(fileName));
 	if(!music[ch]){
 		sound_use = false;
 	}else{
@@ -107,7 +108,7 @@ void loadSNDmusic(char[] name, int ch, int loops)
 	}
 }
 
-void loadSNDse(char[] name, int bank, int ch)
+void loadSNDse(const char[] name, int bank, int ch)
 {
 	if(ch < 0){
 		return;
@@ -116,9 +117,9 @@ void loadSNDse(char[] name, int bank, int ch)
 		return;
 	}
 
-	char[] fileName = name ~ "\0";
+	const char[] fileName = name ~ "\0";
 
-	chunk[bank] = Mix_LoadWAV(fileName);
+	chunk[bank] = Mix_LoadWAV(std.string.toStringz(fileName));
 	if(!chunk[bank]){
 		sound_use = false;
 	}

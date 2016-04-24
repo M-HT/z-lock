@@ -49,7 +49,7 @@ enum {
 }
 
 /* Given a status, returns true if there's a disk in the drive */
-bit CD_INDRIVE(int status) { return status > 0; }
+bool CD_INDRIVE(int status) { return status > 0; }
 
 struct SDL_CDtrack {
 	Uint8 id;		/* Track number */
@@ -118,9 +118,9 @@ SDL_CD * SDL_CDOpen(int drive);
 CDstatus SDL_CDStatus(SDL_CD *cdrom);
 
 /* Play the given CD starting at 'start_track' and 'start_frame' for 'ntracks'
-   tracks and 'nframes' frames.  If both 'ntrack' and 'nframe' are 0, play 
+   tracks and 'nframes' frames.  If both 'ntrack' and 'nframe' are 0, play
    until the end of the CD.  This function will skip data tracks.
-   This function should only be called after calling SDL_CDStatus() to 
+   This function should only be called after calling SDL_CDStatus() to
    get track information about the CD.
    For example:
 	// Play entire CD:

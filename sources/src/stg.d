@@ -205,7 +205,7 @@ void SEQinit()
 	enemy_cnt = 0;
 	enemy_now = 0;
 }
-			
+
 int SEQexec(int id, int seq_pnt)
 {
 	int	eid;
@@ -515,7 +515,7 @@ int SEQexec(int id, int seq_pnt)
 void SEQenemyInit(int id)
 {
 	void SEQenemyTblShuffle(int id){
-		for(int i = seq_enemy.length - 1; i > 0; i--){
+		for(int i = cast(int)(seq_enemy.length) - 1; i > 0; i--){
 			int seed = Rand() % i;
 			int tmp = seq_enemy[i];
 			seq_enemy[i] = seq_enemy[seed];

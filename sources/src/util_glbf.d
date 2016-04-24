@@ -8,7 +8,6 @@
 private	import	std.stdio;
 private	import	std.string;
 private	import	std.math;
-private	import	std.stream;
 private	import	SDL;
 private	import	opengl;
 private	import	util_sdl;
@@ -27,7 +26,7 @@ private GLfloat half_height;
 private GLfloat rate_width;
 private GLfloat rate_height;
 
-private SDL_Surface* LoadBMP(char* filename)
+private SDL_Surface* LoadBMP(const char* filename)
 {
 	Uint8* rowhi, rowlo;
 	Uint8[] tmpbuf;
@@ -73,7 +72,7 @@ private SDL_Surface* LoadBMP(char* filename)
 }
 
 // Load Bitmaps And Convert To Textures
-private int LoadGLTextures(int* tex, char* filename, int* width, int* height)
+private int LoadGLTextures(int* tex, const char* filename, int* width, int* height)
 {
     GLuint texture;
     SDL_Surface* TextureImage;				// Create Storage Space For The Textures
@@ -102,7 +101,7 @@ private int LoadGLTextures(int* tex, char* filename, int* width, int* height)
 }
 
 // Build Our Font Display List
-private int BuildFont(GLBitmapFont* font, char* filename, GLfloat xsize, GLfloat xdots, GLfloat ydots)
+private int BuildFont(GLBitmapFont* font, const char* filename, GLfloat xsize, GLfloat xdots, GLfloat ydots)
 {
     int loop;
 	float cx;												// Holds Our X Character Coord
@@ -152,14 +151,14 @@ GLvoid KillFont(GLBitmapFont font)
 }
 
 // Where The Printing Happens
-GLvoid glPrint(GLBitmapFont font, char[] str)
+GLvoid glPrint(GLBitmapFont font, const char[] str)
 {
 	glBindTexture(GL_TEXTURE_2D, font.texture);				// Select Our Font Texture
 	glListBase(font.base-32);								// Choose The Font Set (0 or 1)
-	glCallLists(str.length, GL_BYTE, str);					// Write The Text To The Screen
+	glCallLists(cast(int)(str.length), GL_BYTE, str.ptr);					// Write The Text To The Screen
 }
 
-int glbfInit(GLBitmapFont* font, char* filename, GLfloat xsize, GLfloat xdots, GLfloat ydots)
+int glbfInit(GLBitmapFont* font, const char* filename, GLfloat xsize, GLfloat xdots, GLfloat ydots)
 {
 	scr_width   = cast(GLfloat)SCREEN_X;
 	scr_height  = cast(GLfloat)SCREEN_Y;
@@ -176,7 +175,7 @@ void glbfQuit(GLBitmapFont font)
     KillFont(font);
 }
 
-void glbfPrint(GLBitmapFont font, char[] str)
+void glbfPrint(GLBitmapFont font, const char[] str)
 {
     glPrint(font, str);
 }
@@ -213,7 +212,7 @@ void glbfTranslate(GLfloat x, GLfloat y)
 	glTranslatef(x / half_width, y / half_height, +0.0f);
 }
 
-GLfloat glbfGetWidth(GLBitmapFont font, char[] str, GLfloat s)
+GLfloat glbfGetWidth(GLBitmapFont font, const char[] str, GLfloat s)
 {
 	return	str.length * glbfGetXsize(font, s);
 }

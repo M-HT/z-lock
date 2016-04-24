@@ -75,8 +75,8 @@ struct SDL_PixelFormat {
 }
 
 /* typedef for private surface blitting functions */
-typedef int (*SDL_blit)(SDL_Surface *src, SDL_Rect *srcrect,
-			SDL_Surface *dst, SDL_Rect *dstrect);
+alias int function (SDL_Surface *src, SDL_Rect *srcrect,
+			SDL_Surface *dst, SDL_Rect *dstrect) SDL_blit;
 
 /* This structure should be treated as read-only, except for 'pixels',
    which, if not NULL, contains the raw pixel data for the surface.
@@ -132,7 +132,7 @@ const uint SDL_SRCALPHA	= 0x00010000;	/* Blit uses source alpha blending */
 const uint SDL_PREALLOC	= 0x01000000;	/* Surface uses preallocated memory */
 
 /* Evaluates to true if the surface needs to be locked before access */
-bit SDL_MUSTLOCK(SDL_Surface *surface)
+bool SDL_MUSTLOCK(SDL_Surface *surface)
 {
 	return surface.offset || ((surface.flags &
 		(SDL_HWSURFACE | SDL_ASYNCBLIT | SDL_RLEACCEL)) != 0);
@@ -186,7 +186,7 @@ struct SDL_Overlay {
 	/* Special flags */
 	union
 	{
-		bit hw_overlay;
+		bool hw_overlay;
 		Uint32 _dummy;
 	}
 //		Uint32 hw_overlay :1;	/* Flag: This overlay hardware accelerated? */
@@ -220,17 +220,17 @@ const uint SDL_PHYSPAL = 0x02;
 /* These functions are used internally, and should not be used unless you
  * have a specific need to specify the video driver you want to use.
  * You should normally use SDL_Init() or SDL_InitSubSystem().
- * 
+ *
  * SDL_VideoInit() initializes the video subsystem -- sets up a connection
  * to the window manager, etc, and determines the current video mode and
  * pixel format, but does not initialize a window or graphics mode.
  * Note that event handling is activated by this routine.
- * 
+ *
  * If you use both sound and video in your application, you need to call
  * SDL_Init() before opening the sound device, otherwise under Win32 DirectX,
  * you won't be able to set full-screen display modes.
  */
-int SDL_VideoInit(char *driver_name, Uint32 flags);
+int SDL_VideoInit(const char *driver_name, Uint32 flags);
 void SDL_VideoQuit();
 
 /* This function fills the given character buffer with the name of the
@@ -255,14 +255,14 @@ SDL_Surface * SDL_GetVideoSurface();
  */
 SDL_VideoInfo * SDL_GetVideoInfo();
 
-/* 
+/*
  * Check to see if a particular video mode is supported.
  * It returns 0 if the requested mode is not supported under any bit depth,
  * or returns the bits-per-pixel of the closest available mode with the
  * given width and height.  If this bits-per-pixel is different from the
  * one used when setting the video mode, SDL_SetVideoMode() will succeed,
  * but will emulate the requested bits-per-pixel with a shadow surface.
- * 
+ *
  * The arguments to SDL_VideoModeOK() are the same ones you would pass to
  * SDL_SetVideoMode()
  */
@@ -270,68 +270,68 @@ int SDL_VideoModeOK(int width, int height, int bpp, Uint32 flags);
 
 /*
  * Return a pointer to an array of available screen dimensions for the
- * given format and video flags, sorted largest to smallest.  Returns 
- * NULL if there are no dimensions available for a particular format, 
+ * given format and video flags, sorted largest to smallest.  Returns
+ * NULL if there are no dimensions available for a particular format,
  * or (SDL_Rect **)-1 if any dimension is okay for the given format.
- * 
- * If 'format' is NULL, the mode list will be for the format given 
+ *
+ * If 'format' is NULL, the mode list will be for the format given
  * by SDL_GetVideoInfo().vfmt
  */
 SDL_Rect ** SDL_ListModes(SDL_PixelFormat *format, Uint32 flags);
 
 /*
  * Set up a video mode with the specified width, height and bits-per-pixel.
- * 
+ *
  * If 'bpp' is 0, it is treated as the current display bits per pixel.
- * 
+ *
  * If SDL_ANYFORMAT is set in 'flags', the SDL library will try to set the
  * requested bits-per-pixel, but will return whatever video pixel format is
  * available.  The default is to emulate the requested pixel format if it
  * is not natively available.
- * 
+ *
  * If SDL_HWSURFACE is set in 'flags', the video surface will be placed in
  * video memory, if possible, and you may have to call SDL_LockSurface()
  * in order to access the raw framebuffer.  Otherwise, the video surface
  * will be created in system memory.
- * 
+ *
  * If SDL_ASYNCBLIT is set in 'flags', SDL will try to perform rectangle
  * updates asynchronously, but you must always lock before accessing pixels.
  * SDL will wait for updates to complete before returning from the lock.
- * 
+ *
  * If SDL_HWPALETTE is set in 'flags', the SDL library will guarantee
  * that the colors set by SDL_SetColors() will be the colors you get.
  * Otherwise, in 8-bit mode, SDL_SetColors() may not be able to set all
  * of the colors exactly the way they are requested, and you should look
  * at the video surface structure to determine the actual palette.
- * If SDL cannot guarantee that the colors you request can be set, 
+ * If SDL cannot guarantee that the colors you request can be set,
  * i.e. if the colormap is shared, then the video surface may be created
  * under emulation in system memory, overriding the SDL_HWSURFACE flag.
- * 
+ *
  * If SDL_FULLSCREEN is set in 'flags', the SDL library will try to set
  * a fullscreen video mode.  The default is to create a windowed mode
  * if the current graphics system has a window manager.
- * If the SDL library is able to set a fullscreen video mode, this flag 
+ * If the SDL library is able to set a fullscreen video mode, this flag
  * will be set in the surface that is returned.
- * 
+ *
  * If SDL_DOUBLEBUF is set in 'flags', the SDL library will try to set up
- * two surfaces in video memory and swap between them when you call 
+ * two surfaces in video memory and swap between them when you call
  * SDL_Flip().  This is usually slower than the normal single-buffering
- * scheme, but prevents "tearing" artifacts caused by modifying video 
- * memory while the monitor is refreshing.  It should only be used by 
+ * scheme, but prevents "tearing" artifacts caused by modifying video
+ * memory while the monitor is refreshing.  It should only be used by
  * applications that redraw the entire screen on every update.
- * 
+ *
  * If SDL_RESIZABLE is set in 'flags', the SDL library will allow the
  * window manager, if any, to resize the window at runtime.  When this
  * occurs, SDL will send a SDL_VIDEORESIZE event to you application,
  * and you must respond to the event by re-calling SDL_SetVideoMode()
  * with the requested size (or another size that suits the application).
- * 
+ *
  * If SDL_NOFRAME is set in 'flags', the SDL library will create a window
  * without any title bar or frame decoration.  Fullscreen video modes have
  * this flag set automatically.
- * 
+ *
  * This function returns the video framebuffer surface, or NULL if it fails.
- * 
+ *
  * If you rely on functionality provided by certain video flags, check the
  * flags of the returned surface to make sure that functionality is available.
  * SDL will fall back to reduced functionality if the exact flags you wanted
@@ -366,7 +366,7 @@ int SDL_Flip(SDL_Surface *screen);
 /*
  * Set the gamma correction for each of the color channels.
  * The gamma values range (approximately) between 0.1 and 10.0
- * 
+ *
  * If this function isn't supported directly by the hardware, it will
  * be emulated using gamma ramps, if available.  If successful, this
  * function returns 0, otherwise it returns -1.
@@ -379,7 +379,7 @@ int SDL_SetGamma(float red, float green, float blue);
  * representing a mapping between the input and output for that channel.
  * The input is the index into the array, and the output is the 16-bit
  * gamma value at that index, scaled to the output color precision.
- * 
+ *
  * You may pass NULL for any of the channels to leave it unchanged.
  * If the call succeeds, it will return 0.  If the display driver or
  * hardware does not support gamma translation, or otherwise fails,
@@ -389,7 +389,7 @@ int SDL_SetGammaRamp(Uint16 *red, Uint16 *green, Uint16 *blue);
 
 /*
  * Retrieve the current values of the gamma translation tables.
- * 
+ *
  * You must pass in valid pointers to arrays of 256 16-bit quantities.
  * Any of the pointers may be NULL to ignore that channel.
  * If the call succeeds, it will return 0.  If the display driver or
@@ -405,15 +405,15 @@ int SDL_GetGammaRamp(Uint16 *red, Uint16 *green, Uint16 *blue);
  * return 1.  If not all the color entries were set exactly as given,
  * it will return 0, and you should look at the surface palette to
  * determine the actual color palette.
- * 
+ *
  * When 'surface' is the surface associated with the current display, the
- * display colormap will be updated with the requested colors.  If 
+ * display colormap will be updated with the requested colors.  If
  * SDL_HWPALETTE was set in SDL_SetVideoMode() flags, SDL_SetColors()
  * will always return 1, and the palette is guaranteed to be set the way
  * you desire, even if the window colormap has to be warped or run under
  * emulation.
  */
-int SDL_SetColors(SDL_Surface *surface, 
+int SDL_SetColors(SDL_Surface *surface,
 			SDL_Color *colors, int firstcolor, int ncolors);
 
 /*
@@ -425,10 +425,10 @@ int SDL_SetColors(SDL_Surface *surface,
  *                the screen
  * Only screens have physical palettes. Separate change of physical/logical
  * palettes is only possible if the screen has SDL_HWPALETTE set.
- * 
+ *
  * The return value is 1 if all colours could be set as requested, and 0
  * otherwise.
- * 
+ *
  * SDL_SetColors() is equivalent to calling this function with
  *     flags = (SDL_LOGPAL|SDL_PHYSPAL).
  */
@@ -466,7 +466,7 @@ void SDL_GetRGBA(Uint32 pixel, SDL_PixelFormat *fmt,
  * If the depth is greater than 8 bits, the pixel format is set using the
  * flags '[RGB]mask'.
  * If the function runs out of memory, it will return NULL.
- * 
+ *
  * The 'flags' tell what kind of surface to create.
  * SDL_SWSURFACE means that the surface should be created in system memory.
  * SDL_HWSURFACE means that the surface should be created in video memory,
@@ -481,7 +481,7 @@ void SDL_GetRGBA(Uint32 pixel, SDL_PixelFormat *fmt,
  * two surfaces in video memory, SDL will try to place the surface in
  * video memory. If this isn't possible or if there is no hardware
  * acceleration available, the surface will be placed in system memory.
- * SDL_SRCALPHA means that the surface will be used for alpha blits and 
+ * SDL_SRCALPHA means that the surface will be used for alpha blits and
  * if the hardware supports hardware acceleration of alpha blits between
  * two surfaces in video memory, to place the surface in video memory
  * if possible, otherwise it will be placed in system memory.
@@ -495,7 +495,7 @@ void SDL_GetRGBA(Uint32 pixel, SDL_PixelFormat *fmt,
  * the SDL_HWSURFACE flag set, and will be created in system memory instead.
  */
 SDL_Surface *SDL_CreateRGBSurface
-			(Uint32 flags, int width, int height, int depth, 
+			(Uint32 flags, int width, int height, int depth,
 			Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask);
 SDL_Surface *SDL_CreateRGBSurfaceFrom(void *pixels,
 			int width, int height, int depth, int pitch,
@@ -503,29 +503,29 @@ SDL_Surface *SDL_CreateRGBSurfaceFrom(void *pixels,
 void SDL_FreeSurface(SDL_Surface *surface);
 
 SDL_Surface *SDL_AllocSurface
-			(Uint32 flags, int width, int height, int depth, 
+			(Uint32 flags, int width, int height, int depth,
 			Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask)
 {
 	return SDL_CreateRGBSurface(flags, width, height, depth,
 		Rmask, Gmask, Bmask, Amask);
-}			
+}
 
 /*
  * SDL_LockSurface() sets up a surface for directly accessing the pixels.
  * Between calls to SDL_LockSurface()/SDL_UnlockSurface(), you can write
- * to and read from 'surface.pixels', using the pixel format stored in 
- * 'surface.format'.  Once you are done accessing the surface, you should 
+ * to and read from 'surface.pixels', using the pixel format stored in
+ * 'surface.format'.  Once you are done accessing the surface, you should
  * use SDL_UnlockSurface() to release it.
- * 
+ *
  * Not all surfaces require locking.  If SDL_MUSTLOCK(surface) evaluates
  * to 0, then you can read and write to the surface at any time, and the
  * pixel format of the surface will not change.  In particular, if the
  * SDL_HWSURFACE flag is not given when calling SDL_SetVideoMode(), you
  * will not need to lock the display surface before accessing it.
- *  
+ *
  * No operating system or library calls should be made between lock/unlock
  * pairs, as critical system locks may be held during this time.
- * 
+ *
  * SDL_LockSurface() returns 0, or -1 if the surface couldn't be locked.
  */
 int SDL_LockSurface(SDL_Surface *surface);
@@ -540,7 +540,7 @@ void SDL_UnlockSurface(SDL_Surface *surface);
 SDL_Surface * SDL_LoadBMP_RW(SDL_RWops *src, int freesrc);
 
 /* Convenience macro -- load a surface from a file */
-SDL_Surface * SDL_LoadBMP(char* file)
+SDL_Surface * SDL_LoadBMP(const char *file)
 {
 	return SDL_LoadBMP_RW(SDL_RWFromFile(file, "rb"), 1);
 }
@@ -554,14 +554,14 @@ int SDL_SaveBMP_RW
 		(SDL_Surface *surface, SDL_RWops *dst, int freedst);
 
 /* Convenience macro -- save a surface to a file */
-int SDL_SaveBMP(SDL_Surface *surface, char* file)
+int SDL_SaveBMP(SDL_Surface *surface, const char *file)
 {
 	return SDL_SaveBMP_RW(surface, SDL_RWFromFile(file, "wb"), 1);
 }
 
 /*
  * Sets the color key (transparent pixel) in a blittable surface.
- * If 'flag' is SDL_SRCCOLORKEY (optionally OR'd with SDL_RLEACCEL), 
+ * If 'flag' is SDL_SRCCOLORKEY (optionally OR'd with SDL_RLEACCEL),
  * 'key' will be the transparent pixel in the source image of a blit.
  * SDL_RLEACCEL requests RLE acceleration for the surface if present,
  * and removes RLE acceleration if absent.
@@ -578,7 +578,7 @@ int SDL_SetColorKey
  * being completely opaque. An 'alpha' value of 255 causes blits to be
  * opaque, the source pixels copied to the destination (the default). Note
  * that per-surface alpha can be combined with colorkey transparency.
- * 
+ *
  * If 'flag' is 0, alpha blending is disabled for the surface.
  * If 'flag' is SDL_SRCALPHA, alpha blending is enabled for the surface.
  * OR:ing the flag with SDL_RLEACCEL requests RLE acceleration for the
@@ -588,13 +588,13 @@ int SDL_SetAlpha(SDL_Surface *surface, Uint32 flag, Uint8 alpha);
 
 /*
  * Sets the clipping rectangle for the destination surface in a blit.
- * 
+ *
  * If the clip rectangle is NULL, clipping will be disabled.
  * If the clip rectangle doesn't intersect the surface, the function will
  * return SDL_FALSE and blits will be completely clipped.  Otherwise the
  * function returns SDL_TRUE and blits to the surface will be clipped to
  * the intersection of the surface area and the clipping rectangle.
- * 
+ *
  * Note that blits are automatically clipped to the edges of the source
  * and destination surfaces.
  */
@@ -608,15 +608,15 @@ SDL_bool SDL_SetClipRect(SDL_Surface *surface, SDL_Rect *rect);
 void SDL_GetClipRect(SDL_Surface *surface, SDL_Rect *rect);
 
 /*
- * Creates a new surface of the specified format, and then copies and maps 
- * the given surface to it so the blit of the converted surface will be as 
+ * Creates a new surface of the specified format, and then copies and maps
+ * the given surface to it so the blit of the converted surface will be as
  * fast as possible.  If this function fails, it returns NULL.
- * 
- * The 'flags' parameter is passed to SDL_CreateRGBSurface() and has those 
+ *
+ * The 'flags' parameter is passed to SDL_CreateRGBSurface() and has those
  * semantics.  You can also pass SDL_RLEACCEL in the flags parameter and
  * SDL will try to RLE accelerate colorkey and alpha blits in the resulting
  * surface.
- * 
+ *
  * This function is used internally by SDL_DisplayFormat().
  */
 SDL_Surface *SDL_ConvertSurface
@@ -629,12 +629,12 @@ SDL_Surface *SDL_ConvertSurface
  * surface (src or dst) is copied.  The final blit rectangles are saved
  * in 'srcrect' and 'dstrect' after all clipping is performed.
  * If the blit is successful, it returns 0, otherwise it returns -1.
- * 
+ *
  * The blit function should not be called on a locked surface.
- * 
+ *
  * The blit semantics for surfaces with and without alpha and colorkey
  * are defined as follows:
- * 
+ *
  * RGBA.RGB:
  *     SDL_SRCALPHA set:
  * 	alpha-blend (using alpha-channel).
@@ -644,7 +644,7 @@ SDL_Surface *SDL_ConvertSurface
  * 	if SDL_SRCCOLORKEY set, only copy the pixels matching the
  * 	RGB values of the source colour key, ignoring alpha in the
  * 	comparison.
- *  
+ *
  * RGB.RGBA:
  *     SDL_SRCALPHA set:
  * 	alpha-blend (using the source per-surface alpha value);
@@ -654,7 +654,7 @@ SDL_Surface *SDL_ConvertSurface
  *     both:
  * 	if SDL_SRCCOLORKEY set, only copy the pixels matching the
  * 	source colour key.
- *  
+ *
  * RGBA.RGBA:
  *     SDL_SRCALPHA set:
  * 	alpha-blend (using the source alpha channel) the RGB values;
@@ -665,8 +665,8 @@ SDL_Surface *SDL_ConvertSurface
  * 	if SDL_SRCCOLORKEY set, only copy the pixels matching the
  * 	RGB values of the source colour key, ignoring alpha in the
  * 	comparison.
- *  
- * RGB.RGB: 
+ *
+ * RGB.RGB:
  *     SDL_SRCALPHA set:
  * 	alpha-blend (using the source per-surface alpha value).
  *     SDL_SRCALPHA not set:
@@ -674,9 +674,9 @@ SDL_Surface *SDL_ConvertSurface
  *     both:
  * 	if SDL_SRCCOLORKEY set, only copy the pixels matching the
  * 	source colour key.
- * 
+ *
  * If either of the surfaces were in video memory, and the blit returns -2,
- * the video memory was lost, so it should be reloaded with artwork and 
+ * the video memory was lost, so it should be reloaded with artwork and
  * re-blitted:
 	while ( SDL_BlitSurface(image, imgrect, screen, dstrect) == -2 ) {
 		while ( SDL_LockSurface(image) < 0 )
@@ -711,42 +711,42 @@ int SDL_BlitSurface
 {
 	return SDL_UpperBlit(src, srcrect, dst, dstrect);
 }
-			 
+
 /*
  * This function performs a fast fill of the given rectangle with 'color'
  * The given rectangle is clipped to the destination surface clip area
  * and the final fill rectangle is saved in the passed in pointer.
  * If 'dstrect' is NULL, the whole surface will be filled with 'color'
- * The color should be a pixel of the format used by the surface, and 
+ * The color should be a pixel of the format used by the surface, and
  * can be generated by the SDL_MapRGB() function.
  * This function returns 0 on success, or -1 on error.
  */
 int SDL_FillRect
 		(SDL_Surface *dst, SDL_Rect *dstrect, Uint32 color);
 
-/* 
+/*
  * This function takes a surface and copies it to a new surface of the
  * pixel format and colors of the video framebuffer, suitable for fast
  * blitting onto the display surface.  It calls SDL_ConvertSurface()
- * 
+ *
  * If you want to take advantage of hardware colorkey or alpha blit
  * acceleration, you should set the colorkey and alpha value before
  * calling this function.
- * 
+ *
  * If the conversion fails or runs out of memory, it returns NULL
  */
 SDL_Surface * SDL_DisplayFormat(SDL_Surface *surface);
 
-/* 
+/*
  * This function takes a surface and copies it to a new surface of the
  * pixel format and colors of the video framebuffer (if possible),
  * suitable for fast alpha blitting onto the display surface.
  * The new surface will always have an alpha channel.
- * 
+ *
  * If you want to take advantage of hardware colorkey or alpha blit
  * acceleration, you should set the colorkey and alpha value before
  * calling this function.
- * 
+ *
  * If the conversion fails or runs out of memory, it returns NULL
  */
 SDL_Surface * SDL_DisplayFormatAlpha(SDL_Surface *surface);
@@ -770,7 +770,7 @@ void SDL_UnlockYUVOverlay(SDL_Overlay *overlay);
 
 /* Blit a video overlay to the display surface.
    The contents of the video surface underneath the blit destination are
-   not defined.  
+   not defined.
    The width and height of the destination rectangle may be different from
    that of the overlay, but currently only 2x scaling is supported.
 */
@@ -786,20 +786,20 @@ void SDL_FreeYUVOverlay(SDL_Overlay *overlay);
 
 /*
  * Dynamically load a GL driver, if SDL is built with dynamic GL.
- * 
+ *
  * SDL links normally with the OpenGL library on your system by default,
  * but you can compile it to dynamically load the GL driver at runtime.
  * If you do this, you need to retrieve all of the GL functions used in
  * your program from the dynamic library using SDL_GL_GetProcAddress().
- * 
+ *
  * This is disabled in default builds of SDL.
  */
-int SDL_GL_LoadLibrary(char *path);
+int SDL_GL_LoadLibrary(const char *path);
 
 /*
  * Get the address of a GL function (for extension functions)
  */
-void *SDL_GL_GetProcAddress(char* proc);
+void *SDL_GL_GetProcAddress(const char *proc);
 
 /*
  * Set an attribute of the OpenGL subsystem before intialization.
@@ -811,7 +811,7 @@ int SDL_GL_SetAttribute(SDL_GLattr attr, int value);
  * interface, such as glX. This is of course different from getting
  * the values from SDL's internal OpenGL subsystem, which only
  * stores the values you request before initialization.
- * 
+ *
  * Developers should track the values they pass into SDL_GL_SetAttribute
  * themselves if they want to retrieve these values.
  */
@@ -837,7 +837,7 @@ void SDL_GL_Unlock();
 /*
  * Sets/Gets the title and icon text of the display window
  */
-void SDL_WM_SetCaption(char *title, char *icon);
+void SDL_WM_SetCaption(const char *title, const char *icon);
 void SDL_WM_GetCaption(char **title, char **icon);
 
 /*
@@ -859,15 +859,15 @@ int SDL_WM_IconifyWindow();
  * Toggle fullscreen mode without changing the contents of the screen.
  * If the display surface does not require locking before accessing
  * the pixel information, then the memory pointers will not change.
- * 
- * If this function was able to toggle fullscreen mode (change from 
+ *
+ * If this function was able to toggle fullscreen mode (change from
  * running in a window to fullscreen, or vice-versa), it will return 1.
  * If it is not implemented, or fails, it returns 0.
- * 
+ *
  * The next call to SDL_SetVideoMode() will set the mode fullscreen
  * attribute based on the flags parameter - if SDL_FULLSCREEN is not
  * set, then the display will be windowed by default where supported.
- * 
+ *
  * This is currently only implemented in the X11 video driver.
  */
 int SDL_WM_ToggleFullScreen(SDL_Surface *surface);

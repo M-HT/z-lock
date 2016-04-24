@@ -87,9 +87,9 @@ void TSKenemy01(int id)
 			TskBuf[id].alpha = 0.0f;
 			TskBuf[id].tx = TskBuf[id].px;
 			TskBuf[id].ty = (Rand() % 80) - (80.0f / 2.0f) - 224.0f;
-			float[XYZ] tpos;
+			float[XY] tpos;
 			TskBuf[id].body_org.length = enemy_poly.length;
-			TskBuf[id].body_org = enemy_poly;
+			TskBuf[id].body_org[] = enemy_poly[];
 			TskBuf[id].body_ang.length = TskBuf[id].body_org.length / 2;
 			for(int i = 0; i < TskBuf[id].body_ang.length; i++){
 				tpos[X] = TskBuf[id].body_org[i*2+0];

@@ -6,6 +6,7 @@
 	2004/02/19 jumpei isshiki
 */
 
+private	import	std.string;
 private	import	std.stdio;
 private	import	std.math;
 private	import	bulletml;
@@ -30,15 +31,10 @@ void initBulletcommandParser(int bank)
 	}
 }
 
-void readBulletcommandParser(int bank, char[] fname)
+void readBulletcommandParser(int bank, const char[] fname)
 {
-	char[]	buf;
-
-	buf.length = 256;
-	buf = fname ~ "\0";
-	parser[bank] = BulletMLParserTinyXML_new(buf);
+	parser[bank] = BulletMLParserTinyXML_new(std.string.toStringz(fname));
 	if(parser[bank]) BulletMLParserTinyXML_parse(parser[bank]);
-	buf.length = 0;
 }
 
 void releaseBulletcommandParser()

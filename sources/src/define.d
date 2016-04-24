@@ -6,7 +6,7 @@
 	2004/04/13 jumpei isshiki
 */
 
-const char[]	PROJECT_NAME = "Z-LOCK";
+string	PROJECT_NAME = "Z-LOCK";
 
 enum{
 	GRP_TITLE = 0,

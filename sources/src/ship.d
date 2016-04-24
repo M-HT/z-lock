@@ -189,7 +189,7 @@ void TSKship(int id)
 	/* replay */
 	if(replay_flag == 1){
 		if(replay_cnt >= replay.length){
-			int ret = replay.length;
+			int ret = cast(int)(replay.length);
 			ret *= 2;
 			replay.length = ret;
 		}
@@ -237,7 +237,7 @@ void TSKship(int id)
 			TskBuf[id].roll = 0.0f;
 			TskBuf[id].alpha = 0.0f;
 			{
-				float[XYZ] tpos;
+				float[XY] tpos;
 				float* poly_data;
 				poly_data = &ship_poly[0];
 				TskBuf[id].body_org.length = ship_poly.length;
@@ -630,7 +630,6 @@ void TSKsshotSimple(int id)
 
 void TSKsshotActive(int id)
 {
-	float[XY]	tpos;
 	BulletCommand	cmd = TskBuf[id].bullet_command;
 
 	switch(TskBuf[id].step){
@@ -859,7 +858,7 @@ float getShipShotDirection(int id)
 
 float getShipLength(float px,float py)
 {
-	float len = 0;
+	float len;
 	float lpx,lpy;
 
 	lpx = fabs(TskBuf[ship_id].px - px);
@@ -878,7 +877,7 @@ float getTargetDirection(int id)
 	int tid;
 
 	tid = TskBuf[id].trg_id;
-	if(tid == -1) return 0.0;
+	if(tid == -1) return 0.0f;
 	px = TskBuf[id].tx - TskBuf[tid].px;
 	py = TskBuf[id].ty - TskBuf[tid].py;
 	dir = atan2(px, py);

@@ -59,6 +59,7 @@ void TSKboss(int id)
 			TskBuf[id].body_ofs[0][X] = 0.0f;
 			TskBuf[id].body_ofs[0][Y] = 0.0f;
 			TskBuf[id].body_ofs[0][Z] = 0.0f;
+			TskBuf[id].body_ofs[0][W] = 0.0f;
 			float pos[XY];
 			float rad[XY];
 			float ang;
@@ -103,7 +104,7 @@ void TSKboss(int id)
 			TskBuf[eid].px = -(SCREEN_SX / 2) + 8 + TskBuf[eid].tx + 16;
 			TskBuf[eid].py = +(SCREEN_SY / 2) - 40;
 			int chr_id;
-			chr_id = Rand() % TskBuf[id].body_ofs.length;
+			chr_id = Rand() % cast(int)(TskBuf[id].body_ofs.length);
 			int max = (8 + stg_level) % 19;
 			for(int i = 0; i < max; i++){
 				eid = setTSK(GROUP_02, &TSKbossOption);
@@ -151,7 +152,7 @@ void TSKboss(int id)
 			playSNDse(SND_SE_EDEST2);
 			setQuake(30, 80.0f);
 			for(int i = 0; i < 16; i++){
-				int num = Rand() % (TskBuf[id].body_ofs.length - 1);
+				int num = Rand() % cast(int)(TskBuf[id].body_ofs.length - 1);
 				num++;
 				if(TskBuf[id].body_ofs[num][W] != 1.0f){
 					i--;
@@ -195,7 +196,7 @@ void TSKboss(int id)
 			playSNDse(SND_SE_EDEST3);
 			setQuake(30, 80.0f);
 			for(int i = 0; i < 16; i++){
-				int num = Rand() % (TskBuf[id].body_ofs.length - 1);
+				int num = Rand() % cast(int)(TskBuf[id].body_ofs.length - 1);
 				num++;
 				if(TskBuf[id].body_ofs[num][W] != 1.0f){
 					i--;
@@ -299,7 +300,7 @@ void TSKbossInt(int id)
 
 void TSKbossDraw(int id)
 {
-	float[XYZ]	pos;
+	float[XY]	pos;
 
 	/* BODY */
 	for(int i = 0; i < TskBuf[id].body_ofs.length; i++){

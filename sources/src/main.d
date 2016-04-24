@@ -6,13 +6,16 @@
 	2003/11/28 jumpei isshiki
 */
 
-private	import	std.c.windows.windows;
+version(Windows){
+	private import core.runtime;
+	private import core.sys.windows.windows;
+}
 private	import	std.stdio;
 private	import	std.string;
-private	import	std.random;
+private	import	std.randomD1;
+private	import	std.conv;
 private	import	SDL;
 private	import	opengl;
-private	import	reflection;
 private	import	util_sdl;
 private	import	util_glbf;
 private	import	util_pad;
@@ -25,12 +28,6 @@ private	import	task;
 private	import	sysinfo;
 private	import	gctrl;
 private	import	ship;
-
-extern (C) void gc_init();
-extern (C) void gc_term();
-extern (C) void _minit();
-extern (C) void _moduleCtor();
-extern (C) void _moduleUnitTests();
 
 GLBitmapFont font;
 
@@ -49,9 +46,6 @@ version(Windows){
 		char[] str_buf;
 		char[][] split_buf;
 
-		gc_init();
-		_minit();
-
 		debug{
 			argc = 0;
 			for(int i = 0; ; i++){
@@ -64,26 +58,22 @@ version(Windows){
 				str_buf[i] = lpCmdLine[i];
 			}
 			split_buf = split(str_buf);
-			if(split_buf[0].length > 1) Reflection.init(split_buf[0]);
-			else						Reflection.init("main.exe");
 		}
 
 		try{
-			_moduleCtor();
-			_moduleUnitTests();
+			Runtime.initialize();
 			result = boot();
-		}catch (Object o){
-			MessageBoxA(null, o.toString(), "Error", MB_OK | MB_ICONEXCLAMATION);
+			Runtime.terminate();
+		}catch (Throwable o){
+			MessageBoxA(null, std.string.toStringz(o.toString()), std.string.toStringz("Error"), MB_OK | MB_ICONEXCLAMATION);
 			result = 0;
 		}
-		gc_term();
 
 		return result;
 	}
 }else{
 	int main(char[][] argv)
 	{
-		Reflection.init(argv[argv.length-1]);
 		return boot();
 	}
 }
@@ -117,8 +107,8 @@ int		boot()
 	}
 
 	/* 起動用パッドを取得 */
-	writefln("press c button - full screen"); 
-	for(int i = 0; i < 60; i++){
+	writefln("press c button - full screen");
+	for(int i1 = 0; i1 < 60; i1++){
 		SDL_Delay(16);
 		SDL_PollEvent(&event);
 		getPAD();
@@ -146,7 +136,7 @@ int		boot()
 	configINIT();
 	sysinfoINIT(256);
 
-	glbfInit(&font, "edificio.bmp", 14.0f, 16.0f, 16.0f);
+	glbfInit(&font, std.string.toStringz("edificio.bmp"), 14.0f, 16.0f, 16.0f);
 	glbfSetScreen(SCREEN_X, SCREEN_Y);
 
 	game_exec = 1;
@@ -356,4 +346,9 @@ uint Rand()
 	}
 
 	return ret;
+}
+
+void RandSeed(int seed)
+{
+	rand_seed(seed, 0);
 }

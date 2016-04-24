@@ -11,6 +11,7 @@ private	import	std.math;
 private	import	std.string;
 private	import	std.file;
 private	import	std.path;
+private	import	std.conv;
 private	import	SDL;
 private	import	opengl;
 private	import	util_sdl;
@@ -603,7 +604,7 @@ void TSKtitleDraw(int id)
 
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glbfPrintBegin();
-	str_buf = "HELLO WORLD PROJECT 2005,2006";
+	str_buf = "HELLO WORLD PROJECT 2005,2006".dup;
 	pos[X]  = -glbfGetWidth(font, str_buf, 0.75f);
 	pos[X] /= 2.0f;
 	pos[Y]  = -(SCREEN_Y / 2) + 32.0f;
@@ -618,7 +619,7 @@ void TSKtitleDraw(int id)
 		case	1:
 			if(!(TskBuf[id].cnt & 0x20)){
 				glbfPrintBegin();
-				str_buf = "PRESS SHOT BUTTON";
+				str_buf = "PRESS SHOT BUTTON".dup;
 				pos[X]  = -glbfGetWidth(font, str_buf, 0.75f);
 				pos[X] /= 2.0f;
 				pos[Y]  = -80.0f;
@@ -633,7 +634,7 @@ void TSKtitleDraw(int id)
 		case	2:
 			if(!(TskBuf[id].cnt & 0x01)){
 				glbfPrintBegin();
-				str_buf = "PRESS SHOT BUTTON";
+				str_buf = "PRESS SHOT BUTTON".dup;
 				pos[X]  = -glbfGetWidth(font, str_buf, 0.75f);
 				pos[X] /= 2.0f;
 				pos[Y]  = -80.0f;
@@ -647,18 +648,18 @@ void TSKtitleDraw(int id)
 			break;
 		/* main menu */
 		case	3:
-			str_buf = "SCORE ATTACK  [ORIGINAL]";
+			str_buf = "SCORE ATTACK  [ORIGINAL]".dup;
 			pos[X]	= -glbfGetWidth(font, str_buf, 0.75f);
 			pos[X] /= 2.0f;
 			pos[Y]	= -32.0f;
 			pos[X]	= ceil(pos[X]);
 			pos[Y]	= ceil(pos[Y]);
 			glbfPrintBegin();
-			str_buf  = "NORMAL MODE   ";
+			str_buf  = "NORMAL MODE   ".dup;
 			str_buf ~= "<";
 			if(normal_stg < 99) str_buf ~= "0";
 			if(normal_stg < 9 ) str_buf ~= "0";
-			str_buf ~= toString(normal_stg+1);
+			str_buf ~= to!string(normal_stg+1);
 			str_buf ~= ">";
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
@@ -666,11 +667,11 @@ void TSKtitleDraw(int id)
 			glbfPrintEnd();
 			pos[Y] -= 16.0f;
 			glbfPrintBegin();
-			str_buf  = "CONCEPT MODE  ";
+			str_buf  = "CONCEPT MODE  ".dup;
 			str_buf ~= "<";
 			if(concept_stg < 99) str_buf ~= "0";
 			if(concept_stg < 9 ) str_buf ~= "0";
-			str_buf ~= toString(concept_stg+1);
+			str_buf ~= to!string(concept_stg+1);
 			str_buf ~= ">";
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
@@ -678,11 +679,11 @@ void TSKtitleDraw(int id)
 			glbfPrintEnd();
 			pos[Y] -= 16.0f;
 			glbfPrintBegin();
-			str_buf  = "ORIGINAL MODE ";
+			str_buf  = "ORIGINAL MODE ".dup;
 			str_buf ~= "<";
 			if(original_stg < 99) str_buf ~= "0";
 			if(original_stg < 9 ) str_buf ~= "0";
-			str_buf ~= toString(original_stg+1);
+			str_buf ~= to!string(original_stg+1);
 			str_buf ~= ">";
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
@@ -690,14 +691,14 @@ void TSKtitleDraw(int id)
 			glbfPrintEnd();
 			pos[Y] -= 16.0f;
 			glbfPrintBegin();
-			str_buf  = "HIDDEN MODE ";
+			str_buf  = "HIDDEN MODE ".dup;
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
 			glbfPrintEnd();
 			pos[Y] -= 16.0f;
 			glbfPrintBegin();
-			str_buf  = "SCORE ATTACK  ";
+			str_buf  = "SCORE ATTACK  ".dup;
 			switch(attack_mode){
 				case	0:
 					str_buf ~= "<NORMAL  >";
@@ -717,7 +718,7 @@ void TSKtitleDraw(int id)
 			glbfPrintEnd();
 			pos[Y] -= 16.0f;
 			glbfPrintBegin();
-			str_buf  = "TIME ATTACK   ";
+			str_buf  = "TIME ATTACK   ".dup;
 			switch(time_mode){
 				case	0:
 					str_buf ~= "<NORMAL  >";
@@ -737,7 +738,7 @@ void TSKtitleDraw(int id)
 			glbfPrintEnd();
 			pos[Y] -= 16.0f;
 			glbfPrintBegin();
-			str_buf = "SOUND";
+			str_buf = "SOUND".dup;
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
@@ -746,7 +747,7 @@ void TSKtitleDraw(int id)
 /++
 			if(replay_file.length == 0) glColor3f(0.5f, 0.5f, 0.5f);
 			glbfPrintBegin();
-			str_buf = "REPLAY";
+			str_buf = "REPLAY".dup;
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
@@ -755,7 +756,7 @@ void TSKtitleDraw(int id)
 			pos[Y] -= 16.0f;
 ++/
 			glbfPrintBegin();
-			str_buf = "EXIT";
+			str_buf = "EXIT".dup;
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
@@ -785,7 +786,7 @@ void TSKtitleDraw(int id)
 			switch(menu_culumn){
 				case	0:
 					high = high_score[0][game_level];
-					str_buf  = "HIGH SCORE ";
+					str_buf  = "HIGH SCORE ".dup;
 					if(high < 100000000) str_buf ~= "0";
 					if(high < 10000000 ) str_buf ~= "0";
 					if(high < 1000000  ) str_buf ~= "0";
@@ -794,7 +795,7 @@ void TSKtitleDraw(int id)
 					if(high < 1000     ) str_buf ~= "0";
 					if(high < 100      ) str_buf ~= "0";
 					if(high < 10       ) str_buf ~= "0";
-					str_buf ~= toString(high);
+					str_buf ~= to!string(high);
 					glColor3f(1.0f,1.0f,1.0f);
 					glbfPrintBegin();
 					glbfTranslate(pos[X], pos[Y]);
@@ -804,7 +805,7 @@ void TSKtitleDraw(int id)
 					break;
 				case	1:
 					high = high_score[1][game_level];
-					str_buf  = "HIGH SCORE ";
+					str_buf  = "HIGH SCORE ".dup;
 					if(high < 100000000) str_buf ~= "0";
 					if(high < 10000000 ) str_buf ~= "0";
 					if(high < 1000000  ) str_buf ~= "0";
@@ -813,7 +814,7 @@ void TSKtitleDraw(int id)
 					if(high < 1000     ) str_buf ~= "0";
 					if(high < 100      ) str_buf ~= "0";
 					if(high < 10       ) str_buf ~= "0";
-					str_buf ~= toString(high);
+					str_buf ~= to!string(high);
 					glColor3f(1.0f,1.0f,1.0f);
 					glbfPrintBegin();
 					glbfTranslate(pos[X], pos[Y]);
@@ -823,7 +824,7 @@ void TSKtitleDraw(int id)
 					break;
 				case	2:
 					high = high_score[4][game_level];
-					str_buf  = "HIGH SCORE ";
+					str_buf  = "HIGH SCORE ".dup;
 					if(high < 100000000) str_buf ~= "0";
 					if(high < 10000000 ) str_buf ~= "0";
 					if(high < 1000000  ) str_buf ~= "0";
@@ -832,7 +833,7 @@ void TSKtitleDraw(int id)
 					if(high < 1000     ) str_buf ~= "0";
 					if(high < 100      ) str_buf ~= "0";
 					if(high < 10       ) str_buf ~= "0";
-					str_buf ~= toString(high);
+					str_buf ~= to!string(high);
 					glColor3f(1.0f,1.0f,1.0f);
 					glbfPrintBegin();
 					glbfTranslate(pos[X], pos[Y]);
@@ -842,7 +843,7 @@ void TSKtitleDraw(int id)
 					break;
 				case	3:
 					high = high_score[5][game_level];
-					str_buf  = "HIGH SCORE ";
+					str_buf  = "HIGH SCORE ".dup;
 					if(high < 100000000) str_buf ~= "0";
 					if(high < 10000000 ) str_buf ~= "0";
 					if(high < 1000000  ) str_buf ~= "0";
@@ -851,7 +852,7 @@ void TSKtitleDraw(int id)
 					if(high < 1000     ) str_buf ~= "0";
 					if(high < 100      ) str_buf ~= "0";
 					if(high < 10       ) str_buf ~= "0";
-					str_buf ~= toString(high);
+					str_buf ~= to!string(high);
 					glColor3f(1.0f,1.0f,1.0f);
 					glbfPrintBegin();
 					glbfTranslate(pos[X], pos[Y]);
@@ -861,7 +862,7 @@ void TSKtitleDraw(int id)
 					break;
 				case	4:
 					high = high_score[2][time_mode];
-					str_buf  = "HIGH SCORE ";
+					str_buf  = "HIGH SCORE ".dup;
 					if(high < 100000000) str_buf ~= "0";
 					if(high < 10000000 ) str_buf ~= "0";
 					if(high < 1000000  ) str_buf ~= "0";
@@ -870,7 +871,7 @@ void TSKtitleDraw(int id)
 					if(high < 1000     ) str_buf ~= "0";
 					if(high < 100      ) str_buf ~= "0";
 					if(high < 10       ) str_buf ~= "0";
-					str_buf ~= toString(high);
+					str_buf ~= to!string(high);
 					glColor3f(1.0f,1.0f,1.0f);
 					glbfPrintBegin();
 					glbfTranslate(pos[X], pos[Y]);
@@ -884,15 +885,15 @@ void TSKtitleDraw(int id)
 					tmin  = high / ONE_MIN;
 					tsec  = high / ONE_SEC % ONE_SEC;
 					tmsec = ((high % ONE_SEC) * 100 / ONE_SEC);
-					str_buf  = "HIGH SCORE ";
+					str_buf  = "HIGH SCORE ".dup;
 					if(tmin < 10) str_buf ~= "0";
-					str_buf ~= toString(tmin);
+					str_buf ~= to!string(tmin);
 					str_buf ~= ":";
 					if(tsec < 10) str_buf ~= "0";
-					str_buf ~= toString(tsec);
+					str_buf ~= to!string(tsec);
 					str_buf ~= ":";
 					if(tmsec < 10) str_buf ~= "0";
-					str_buf ~= toString(tmsec);
+					str_buf ~= to!string(tmsec);
 					glColor3f(1.0f,1.0f,1.0f);
 					glbfPrintBegin();
 					glbfTranslate(pos[X], pos[Y]);
@@ -906,7 +907,7 @@ void TSKtitleDraw(int id)
 			break;
 		/* sound */
 		case	4:
-			str_buf = "- SOUND -";
+			str_buf = "- SOUND -".dup;
 			pos[X]	= -glbfGetWidth(font, str_buf, 0.75f);
 			pos[X] /= 2.0f;
 			pos[Y]	= -48.0f;
@@ -917,7 +918,7 @@ void TSKtitleDraw(int id)
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
 			glbfPrintEnd();
-			str_buf  = "   SE TEST ";
+			str_buf  = "   SE TEST ".dup;
 			str_buf ~= "SPECIAL-SHOT";
 			pos[X]	= -glbfGetWidth(font, str_buf, 0.75f);
 			pos[X] /= 2.0f;
@@ -925,27 +926,27 @@ void TSKtitleDraw(int id)
 			pos[X]	= ceil(pos[X]);
 			pos[Y]	= ceil(pos[Y]);
 			glbfPrintBegin();
-			str_buf  = "BGM VOLUME ";
+			str_buf  = "BGM VOLUME ".dup;
 			if(vol_music < 100) str_buf ~= "0";
 			if(vol_music < 10 ) str_buf ~= "0";
-			str_buf ~= toString(vol_music);
+			str_buf ~= to!string(vol_music);
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
 			glbfPrintEnd();
 			pos[Y] -= 16.0f;
 			glbfPrintBegin();
-			str_buf  = " SE VOLUME ";
+			str_buf  = " SE VOLUME ".dup;
 			if(vol_se < 100) str_buf ~= "0";
 			if(vol_se < 10 ) str_buf ~= "0";
-			str_buf ~= toString(vol_se);
+			str_buf ~= to!string(vol_se);
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
 			glbfPrintEnd();
 			pos[Y] -= 16.0f;
 			glbfPrintBegin();
-			str_buf  = "  BGM TEST ";
+			str_buf  = "  BGM TEST ".dup;
 			switch(bgm_test){
 				case	0:
 					str_buf ~= "STAGE-A";
@@ -972,7 +973,7 @@ void TSKtitleDraw(int id)
 			glbfPrintEnd();
 			pos[Y] -= 16.0f;
 			glbfPrintBegin();
-			str_buf  = "   SE TEST ";
+			str_buf  = "   SE TEST ".dup;
 			switch(se_test){
 				case	0:
 					str_buf ~= "LOCK-ON";
@@ -1005,7 +1006,7 @@ void TSKtitleDraw(int id)
 			glbfPrintEnd();
 			pos[Y] -= 16.0f;
 			glbfPrintBegin();
-			str_buf  = "VOICE TEST ";
+			str_buf  = "VOICE TEST ".dup;
 			switch(voice_test){
 				case	0:
 					str_buf ~= "CHARGE";
@@ -1029,7 +1030,7 @@ void TSKtitleDraw(int id)
 			glbfPrintEnd();
 			pos[Y] -= 16.0f;
 			glbfPrintBegin();
-			str_buf = "QUIT";
+			str_buf = "QUIT".dup;
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
@@ -1054,7 +1055,7 @@ void TSKtitleDraw(int id)
 			break;
 		/* replay */
 		case	5:
-			str_buf = "- REPLAY -";
+			str_buf = "- REPLAY -".dup;
 			pos[X]	= -glbfGetWidth(font, str_buf, 0.75f);
 			pos[X] /= 2.0f;
 			pos[Y]	= -16.0f;
@@ -1065,7 +1066,7 @@ void TSKtitleDraw(int id)
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
 			glbfPrintEnd();
-			str_buf = "SCORE ATTACK  [ORIGINAL]";
+			str_buf = "SCORE ATTACK  [ORIGINAL]".dup;
 			pos[X]	= -glbfGetWidth(font, str_buf, 0.75f);
 			pos[X] /= 2.0f;
 			pos[Y]	= -48.0f;
@@ -1074,7 +1075,7 @@ void TSKtitleDraw(int id)
 			if(rep_flag[0] != 0) glColor3f(1.0f,1.0f,1.0f);
 			else				 glColor3f(0.5f,0.5f,0.5f);
 			glbfPrintBegin();
-			str_buf  = "NORMAL MODE";
+			str_buf  = "NORMAL MODE".dup;
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
@@ -1083,7 +1084,7 @@ void TSKtitleDraw(int id)
 			if(rep_flag[1] != 0) glColor3f(1.0f,1.0f,1.0f);
 			else				 glColor3f(0.5f,0.5f,0.5f);
 			glbfPrintBegin();
-			str_buf  = "CONCEPT MODE";
+			str_buf  = "CONCEPT MODE".dup;
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
@@ -1092,7 +1093,7 @@ void TSKtitleDraw(int id)
 			if(rep_flag[2] != 0) glColor3f(1.0f,1.0f,1.0f);
 			else				 glColor3f(0.5f,0.5f,0.5f);
 			glbfPrintBegin();
-			str_buf  = "ORIGINAL MODE";
+			str_buf  = "ORIGINAL MODE".dup;
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
@@ -1105,7 +1106,7 @@ void TSKtitleDraw(int id)
 			if(repatk_mode == 2 && rep_flag[5] != 0)	  glColor3f(1.0f,1.0f,1.0f);
 			else if(repatk_mode == 2 && rep_flag[5] == 0) glColor3f(0.5f,0.5f,0.5f);
 			glbfPrintBegin();
-			str_buf  = "SCORE ATTACK  ";
+			str_buf  = "SCORE ATTACK  ".dup;
 			switch(repatk_mode){
 				case	0:
 					str_buf ~= "<NORMAL  >";
@@ -1131,7 +1132,7 @@ void TSKtitleDraw(int id)
 			if(reptime_mode == 2 && rep_flag[8] != 0)	   glColor3f(1.0f,1.0f,1.0f);
 			else if(reptime_mode == 2 && rep_flag[8] == 0) glColor3f(0.5f,0.5f,0.5f);
 			glbfPrintBegin();
-			str_buf  = "TIME ATTACK   ";
+			str_buf  = "TIME ATTACK   ".dup;
 			switch(reptime_mode){
 				case	0:
 					str_buf ~= "<NORMAL  >";
@@ -1152,7 +1153,7 @@ void TSKtitleDraw(int id)
 			pos[Y] -= 16.0f;
 			glColor3f(1.0f,1.0f,1.0f);
 			glbfPrintBegin();
-			str_buf = "EXIT";
+			str_buf = "EXIT".dup;
 			glbfTranslate(pos[X], pos[Y]);
 			glbfScale(0.75f, 0.5f);
 			glbfPrint(font, str_buf);
@@ -1163,7 +1164,7 @@ void TSKtitleDraw(int id)
 				case	0:
 					if(rep_flag[0] != 0){
 						high = high_score[0][0];
-						str_buf  = "HIGH SCORE ";
+						str_buf  = "HIGH SCORE ".dup;
 						if(high < 100000000) str_buf ~= "0";
 						if(high < 10000000 ) str_buf ~= "0";
 						if(high < 1000000  ) str_buf ~= "0";
@@ -1172,7 +1173,7 @@ void TSKtitleDraw(int id)
 						if(high < 1000     ) str_buf ~= "0";
 						if(high < 100      ) str_buf ~= "0";
 						if(high < 10       ) str_buf ~= "0";
-						str_buf ~= toString(high);
+						str_buf ~= to!string(high);
 						glColor3f(1.0f,1.0f,1.0f);
 						glbfPrintBegin();
 						glbfTranslate(pos[X], pos[Y]);
@@ -1180,10 +1181,10 @@ void TSKtitleDraw(int id)
 						glbfPrint(font, str_buf);
 						glbfPrintEnd();
 						pos[Y] -= 16.0f;
-						str_buf  = "    SECTOR ";
-						str_buf ~= toString(rep_data[0]);
+						str_buf  = "    SECTOR ".dup;
+						str_buf ~= to!string(rep_data[0]);
 						str_buf ~= " - ";
-						str_buf ~= toString(rep_data[1]);
+						str_buf ~= to!string(rep_data[1]);
 						glColor3f(1.0f,1.0f,1.0f);
 						glbfPrintBegin();
 						glbfTranslate(pos[X], pos[Y]);
@@ -1195,7 +1196,7 @@ void TSKtitleDraw(int id)
 				case	1:
 					if(rep_flag[1] != 0){
 						high = high_score[1][0];
-						str_buf  = "HIGH SCORE ";
+						str_buf  = "HIGH SCORE ".dup;
 						if(high < 100000000) str_buf ~= "0";
 						if(high < 10000000 ) str_buf ~= "0";
 						if(high < 1000000  ) str_buf ~= "0";
@@ -1204,7 +1205,7 @@ void TSKtitleDraw(int id)
 						if(high < 1000     ) str_buf ~= "0";
 						if(high < 100      ) str_buf ~= "0";
 						if(high < 10       ) str_buf ~= "0";
-						str_buf ~= toString(high);
+						str_buf ~= to!string(high);
 						glColor3f(1.0f,1.0f,1.0f);
 						glbfPrintBegin();
 						glbfTranslate(pos[X], pos[Y]);
@@ -1212,10 +1213,10 @@ void TSKtitleDraw(int id)
 						glbfPrint(font, str_buf);
 						glbfPrintEnd();
 						pos[Y] -= 16.0f;
-						str_buf  = "    SECTOR ";
-						str_buf ~= toString(rep_data[0]);
+						str_buf  = "    SECTOR ".dup;
+						str_buf ~= to!string(rep_data[0]);
 						str_buf ~= " - ";
-						str_buf ~= toString(rep_data[1]);
+						str_buf ~= to!string(rep_data[1]);
 						glColor3f(1.0f,1.0f,1.0f);
 						glbfPrintBegin();
 						glbfTranslate(pos[X], pos[Y]);
@@ -1227,7 +1228,7 @@ void TSKtitleDraw(int id)
 				case	2:
 					if(rep_flag[2] != 0){
 						high = high_score[1][1];
-						str_buf  = "HIGH SCORE ";
+						str_buf  = "HIGH SCORE ".dup;
 						if(high < 100000000) str_buf ~= "0";
 						if(high < 10000000 ) str_buf ~= "0";
 						if(high < 1000000  ) str_buf ~= "0";
@@ -1236,7 +1237,7 @@ void TSKtitleDraw(int id)
 						if(high < 1000     ) str_buf ~= "0";
 						if(high < 100      ) str_buf ~= "0";
 						if(high < 10       ) str_buf ~= "0";
-						str_buf ~= toString(high);
+						str_buf ~= to!string(high);
 						glColor3f(1.0f,1.0f,1.0f);
 						glbfPrintBegin();
 						glbfTranslate(pos[X], pos[Y]);
@@ -1244,10 +1245,10 @@ void TSKtitleDraw(int id)
 						glbfPrint(font, str_buf);
 						glbfPrintEnd();
 						pos[Y] -= 16.0f;
-						str_buf  = "    SECTOR ";
-						str_buf ~= toString(rep_data[0]);
+						str_buf  = "    SECTOR ".dup;
+						str_buf ~= to!string(rep_data[0]);
 						str_buf ~= " - ";
-						str_buf ~= toString(rep_data[1]);
+						str_buf ~= to!string(rep_data[1]);
 						glColor3f(1.0f,1.0f,1.0f);
 						glbfPrintBegin();
 						glbfTranslate(pos[X], pos[Y]);

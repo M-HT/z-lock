@@ -28,11 +28,6 @@ import SDL_types;
 
 extern(C):
 
-typedef int (*_seek_func_t)(SDL_RWops *context, int offset, int whence);
-typedef int (*_read_func_t)(SDL_RWops *context, void *ptr, int size, int maxnum);
-typedef int (*_write_func_t)(SDL_RWops *context, void *ptr, int size, int num);
-typedef int (*_close_func_t)(SDL_RWops *context);
-
 /* This is the read/write operation structure -- very basic */
 
 struct SDL_RWops {
@@ -40,26 +35,22 @@ struct SDL_RWops {
 		SEEK_SET, SEEK_CUR, SEEK_END
 	   Returns the final offset in the data source.
 	 */
-	_seek_func_t seek;
-//	int (*seek)(SDL_RWops *context, int offset, int whence);
+	int function (SDL_RWops *context, int offset, int whence) seek;
 
 	/* Read up to 'num' objects each of size 'objsize' from the data
 	   source to the area pointed at by 'ptr'.
 	   Returns the number of objects read, or -1 if the read failed.
 	 */
-	_read_func_t read;
-//	int (*read)(SDL_RWops *context, void *ptr, int size, int maxnum);
+	int function (SDL_RWops *context, void *ptr, int size, int maxnum) read;
 
 	/* Write exactly 'num' objects each of size 'objsize' from the area
 	   pointed at by 'ptr' to data source.
 	   Returns 'num', or -1 if the write failed.
 	 */
-	_write_func_t write;
-//	int (*write)(SDL_RWops *context, void *ptr, int size, int num);
+	int function (SDL_RWops *context, void *ptr, int size, int num) write;
 
 	/* Close and free an allocated SDL_FSops structure */
-	_close_func_t close;
-//	int (*close)(SDL_RWops *context);
+	int function (SDL_RWops *context) close;
 
 	Uint32 type;
 	union {
@@ -81,7 +72,7 @@ struct SDL_RWops {
 
 /* Functions to create SDL_RWops structures from various data sources */
 
-SDL_RWops * SDL_RWFromFile(char *file, char *mode);
+SDL_RWops * SDL_RWFromFile(const char *file, const char *mode);
 
 SDL_RWops * SDL_RWFromFP(void *fp, int autoclose);
 
@@ -93,40 +84,25 @@ void SDL_FreeRW(SDL_RWops *area);
 /* Macros to easily read and write from an SDL_RWops structure */
 int SDL_RWseek(SDL_RWops *ctx, int offset, int whence)
 {
-	_seek_func_t seek;
-//	int (*seek)(SDL_RWops *context, int offset, int whence);
-	seek = ctx.seek;
-	return (*seek)(ctx, offset, whence);
+	return ctx.seek(ctx, offset, whence);
 }
 
 int SDL_RWtell(SDL_RWops *ctx)
 {
-	_seek_func_t seek;
-//	int (*seek)(SDL_RWops *context, int offset, int whence);
-	seek = ctx.seek;
-	return (*seek)(ctx, 0, 1);
+	return ctx.seek(ctx, 0, 1);
 }
 
 int SDL_RWread(SDL_RWops *ctx, void* ptr, int size, int n)
 {
-	_read_func_t read;
-//	int (*read)(SDL_RWops *context, void *ptr, int size, int maxnum);
-	read = ctx.read;
-	return (*read)(ctx, ptr, size, n);
+	return ctx.read(ctx, ptr, size, n);
 }
 
 int SDL_RWwrite(SDL_RWops *ctx, void* ptr, int size, int n)
 {
-	_write_func_t write;
-//	int (*write)(SDL_RWops *context, void *ptr, int size, int num);
-	write = ctx.write;
-	return (*write)(ctx, ptr, size, n);
+	return ctx.write(ctx, ptr, size, n);
 }
 
 int SDL_RWclose(SDL_RWops *ctx)
 {
-	_close_func_t close;
-//	int (*close)(SDL_RWops *context);
-	close = ctx.close;
-	return (*close)(ctx);
+	return ctx.close(ctx);
 }

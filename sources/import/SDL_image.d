@@ -38,9 +38,9 @@ extern (C) {
    surface afterwards by calling:
    SDL_SetColorKey(image, SDL_RLEACCEL, image->format->colorkey);
 */
-	SDL_Surface * IMG_LoadTyped_RW(SDL_RWops *src, int freesrc, char *type);
+	SDL_Surface * IMG_LoadTyped_RW(SDL_RWops *src, int freesrc, const char *type);
 /* Convenience functions */
-	SDL_Surface * IMG_Load(char *file);
+	SDL_Surface * IMG_Load(const char *file);
 	SDL_Surface * IMG_Load_RW(SDL_RWops *src, int freesrc);
 
 /* Invert the alpha of a surface for use with OpenGL
@@ -73,7 +73,7 @@ extern (C) {
 	SDL_Surface * IMG_LoadTGA_RW(SDL_RWops *src);
 	SDL_Surface * IMG_LoadLBM_RW(SDL_RWops *src);
 
-	SDL_Surface * IMG_ReadXPMFromArray(char **xpm);
+	SDL_Surface * IMG_ReadXPMFromArray(const char **xpm);
 
 /* We'll use SDL for reporting errors */
 //#define IMG_SetError	SDL_SetError

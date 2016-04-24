@@ -8,7 +8,6 @@
 
 private	import	std.stdio;
 private	import	std.math;
-private	import	std.random;
 private	import	std.file;
 private	import	std.path;
 private	import	util_snd;
@@ -97,7 +96,7 @@ int[] replay;
 int[] replay_data;
 int replay_flag;
 int replay_cnt;
-char[][] replay_file;
+string[] replay_file;
 
 
 void TSKgctrl(int id)
@@ -116,13 +115,13 @@ void TSKgctrl(int id)
 			debug{
 				pause_flag = 1;
 			}
-			char[][] fpath;
 			int fcnt = 0;
-			fpath = listdir(std.path.curdir);
-			for(int i = 0; i < fpath.length; i++){
-				if(fnmatch(fpath[i], "rep*.rep")){
+			auto fpath = dirEntries(".", SpanMode.shallow);
+			foreach (string filename; fpath) {
+				string filebasename = baseName(filename);
+				if(globMatch(filebasename, "rep*.rep")){
 					replay_file.length = fcnt + 1;
-					replay_file[fcnt] = fpath[i];
+					replay_file[fcnt] = filebasename;
 					fcnt++;
 				}
 			}
@@ -178,7 +177,7 @@ void TSKgctrl(int id)
 				ship_type = replay[6];
 			}
 			replay_cnt = 16;
-			rand_seed(replay[1], 0);
+			RandSeed(replay[1]);
 			setTSK(GROUP_01,&TSKbg01);
 			setTSK(GROUP_01,&TSKstgCtrl);
 			setTSK(GROUP_05,&TSKship);

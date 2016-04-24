@@ -26,7 +26,7 @@ import SDL_types;
 // !!! A hack! struct SDL_keysym is defined in this module,
 // !!! so we need to resolve the nameclash...
 // !!! Definitely won't work on *NIX but for now will do.
-import SDL_Keysym;
+public import SDL_Keysym;
 
 extern(C):
 

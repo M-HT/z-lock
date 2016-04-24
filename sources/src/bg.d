@@ -282,6 +282,7 @@ void TSKbgStar(int id)
 		case	0:
 			TskBuf[id].px = cast(float)(Rand() % 2048) - 1024.0f;
 			TskBuf[id].py = cast(float)(Rand() % 2048) - 1024.0f;
+			TskBuf[id].pz = 0.0f;
 			TskBuf[id].fp_int = null;
 			TskBuf[id].fp_draw = &TSKbgStarDraw;
 			TskBuf[id].vy = (Rand() % 10000) / 10000.0f * 4.0f * 0.25f;

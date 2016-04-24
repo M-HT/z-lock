@@ -22,12 +22,15 @@
 
 /* Include file for SDL event handling */
 
-import SDL_types;
-import SDL_active;
-import SDL_keyboard;
-import SDL_mouse;
-import SDL_joystick;
-import SDL_syswm;
+public
+{
+    import SDL_types;
+    import SDL_active;
+    import SDL_keyboard;
+    import SDL_mouse;
+    import SDL_joystick;
+    import SDL_syswm;
+}
 
 extern(C):
 
@@ -231,7 +234,7 @@ void SDL_PumpEvents();
    If 'action' is SDL_PEEKEVENT, up to 'numevents' events at the front
    of the event queue, matching 'mask', will be returned and will not
    be removed from the queue.
-   If 'action' is SDL_GETEVENT, up to 'numevents' events at the front 
+   If 'action' is SDL_GETEVENT, up to 'numevents' events at the front
    of the event queue, matching 'mask', will be returned and will be
    removed from the queue.
    This function returns the number of events actually stored, or -1
@@ -271,14 +274,14 @@ int SDL_PushEvent(SDL_Event *event);
 
   The filter is protypted as:
 */
-alias int (*SDL_EventFilter)(SDL_Event *event);
+alias int function (SDL_Event *event) SDL_EventFilter;
 /*
   If the filter returns 1, then the event will be added to the internal queue.
-  If it returns 0, then the event will be dropped from the queue, but the 
+  If it returns 0, then the event will be dropped from the queue, but the
   internal state will still be updated.  This allows selective filtering of
   dynamically arriving events.
 
-  WARNING:  Be very careful of what you do in the event filter function, as 
+  WARNING:  Be very careful of what you do in the event filter function, as
             it may run in a different thread!
 
   There is one caveat when dealing with the SDL_QUITEVENT event type.  The
@@ -301,10 +304,10 @@ SDL_EventFilter SDL_GetEventFilter();
   If 'state' is set to SDL_IGNORE, that event will be automatically dropped
   from the event queue and will not event be filtered.
   If 'state' is set to SDL_ENABLE, that event will be processed normally.
-  If 'state' is set to SDL_QUERY, SDL_EventState() will return the 
+  If 'state' is set to SDL_QUERY, SDL_EventState() will return the
   current processing state of the specified event.
 */
-const int SDL_QUERY	= -1;
+const uint SDL_QUERY	= cast(uint) -1;
 const uint SDL_IGNORE	= 0;
 const uint SDL_DISABLE	= 0;
 const uint SDL_ENABLE	= 1;
