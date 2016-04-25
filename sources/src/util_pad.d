@@ -6,8 +6,8 @@
 	2003/12/02 jumpei isshiki
 */
 
-private	import	std.stdio;
 private	import	SDL;
+private	import	std.conv;
 
 enum{
 	PAD_UP = 0x01,
@@ -50,11 +50,21 @@ int initPAD()
 		return	0;
     }
 
-	if(SDL_NumJoysticks() > 0){
-		joys = SDL_JoystickOpen(0);
+	joys = null;
+	version (PANDORA) {
+		foreach (i; 0..SDL_NumJoysticks()) {
+			if (to!string(SDL_JoystickName(i)) == "nub0") {
+				joys = SDL_JoystickOpen(i);
+			}
+		}
+	} else {
+		if(SDL_NumJoysticks() > 0){
+			joys = SDL_JoystickOpen(0);
+		}
+	}
+
+	if (joys){
 		SDL_JoystickEventState(SDL_ENABLE);
-	}else{
-		joys = null;
 	}
 
 	pads = 0;
@@ -112,11 +122,20 @@ int getPAD()
 			btn8 = SDL_JoystickGetButton(joys, 7);
 		}
 	}
-	if(keys[SDLK_z] == SDL_PRESSED || keys[SDLK_SLASH] == SDL_PRESSED || btn1){
-		pad |= PAD_BUTTON1;
-	}
-	if(keys[SDLK_x] == SDL_PRESSED || keys[SDLK_BACKSLASH] == SDL_PRESSED || btn2){
-		pad |= PAD_BUTTON2;
+	version (PANDORA) {
+		if(keys[SDLK_HOME] == SDL_PRESSED || keys[SDLK_PAGEUP] == SDL_PRESSED || btn1){
+			pad |= PAD_BUTTON1;
+		}
+		if(keys[SDLK_PAGEDOWN] == SDL_PRESSED || keys[SDLK_END] == SDL_PRESSED || btn2){
+			pad |= PAD_BUTTON2;
+		}
+	} else {
+		if(keys[SDLK_z] == SDL_PRESSED || keys[SDLK_SLASH] == SDL_PRESSED || btn1){
+			pad |= PAD_BUTTON1;
+		}
+		if(keys[SDLK_x] == SDL_PRESSED || keys[SDLK_BACKSLASH] == SDL_PRESSED || btn2){
+			pad |= PAD_BUTTON2;
+		}
 	}
 	if(keys[SDLK_p] == SDL_PRESSED || btn3){
 		pad |= PAD_BUTTON3;

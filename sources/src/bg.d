@@ -287,9 +287,7 @@ void TSKbgStar(int id)
 			TskBuf[id].fp_draw = &TSKbgStarDraw;
 			TskBuf[id].vy = (Rand() % 10000) / 10000.0f * 4.0f * 0.25f;
 			TskBuf[id].body_org.length = BG_STAR_POSY_MAX;
-			for(int i = 0; i < BG_STAR_POSY_MAX; i++){
-				TskBuf[id].body_org[i] = TskBuf[id].py;
-			}
+			TskBuf[id].body_org[] = TskBuf[id].py;
 			TskBuf[id].cy = TskBuf[id].body_org[(BG_STAR_POSY_MAX - 1)];
 			TskBuf[id].step++;
 			break;
@@ -301,9 +299,7 @@ void TSKbgStar(int id)
 			TskBuf[id].body_org[0] = TskBuf[id].py;
 			if(TskBuf[id].py > 1024.0f){
 				TskBuf[id].py -= 2048f;
-				for(int i = 0; i < BG_STAR_POSY_MAX; i++){
-					TskBuf[id].body_org[i] = TskBuf[id].py;
-				}
+				TskBuf[id].body_org[] = TskBuf[id].py;
 			}
 			TskBuf[id].cy = TskBuf[id].body_org[(BG_STAR_POSY_MAX - 1)];
 			break;

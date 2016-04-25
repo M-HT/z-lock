@@ -52,6 +52,8 @@ float		cam_pos;
 
 private	int width = SCREEN_X;
 private	int height = SCREEN_Y;
+public	int startx = 0;
+public	int starty = 0;
 private	float nearPlane = 0.0f;
 private	float farPlane = 1000.0f;
 private	GLuint TEXTURE_NONE = 0xffffffff;
@@ -77,16 +79,27 @@ int initVIDEO()
 {
 	Uint32	videoFlags;
 
-	debug{
-		if((pads & PAD_BUTTON1)){
-			videoFlags = SDL_OPENGL | SDL_FULLSCREEN;
-		}else{
-			videoFlags = SDL_OPENGL | SDL_RESIZABLE;
+	videoFlags = SDL_OPENGL;
+	version (PANDORA) {
+		videoFlags |= SDL_FULLSCREEN;
+	} else {
+		debug{
+			if((pads & PAD_BUTTON1)){
+				videoFlags = SDL_OPENGL | SDL_FULLSCREEN;
+			}else{
+				videoFlags = SDL_OPENGL | SDL_RESIZABLE;
+			}
 		}
-	}else{
-		videoFlags = SDL_OPENGL | SDL_FULLSCREEN;
 	}
-	primary = SDL_SetVideoMode(width, height, 0, videoFlags);
+	int physical_width = width;
+	int physical_height = height;
+	version (PANDORA) {
+		physical_width = 800;
+		physical_height = 480;
+		startx = (800 - width) / 2;
+		starty = (480 - height) / 2;
+	}
+	primary = SDL_SetVideoMode(physical_width, physical_height, 0, videoFlags);
 	if(primary == null){
 		return	0;
     }
@@ -151,14 +164,16 @@ void flipSDL()
 
 void resizedSDL(int w, int h)
 {
-	glViewport(0, 0, w, h);
+	glViewport(startx, starty, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	w = (w ? w : 1);
-	glFrustum(-nearPlane,nearPlane,
-			  -nearPlane * h / w,
-			   nearPlane * h / w,
-			  0.1f, farPlane);
+	if (nearPlane != 0.0f) {
+		w = (w ? w : 1);
+		glFrustum(-nearPlane,nearPlane,
+			  	-nearPlane * h / w,
+			   	nearPlane * h / w,
+				  0.1f, farPlane);
+	}
 	glMatrixMode(GL_MODELVIEW);
 }
 

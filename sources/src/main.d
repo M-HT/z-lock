@@ -107,11 +107,14 @@ int		boot()
 	}
 
 	/* 起動用パッドを取得 */
-	writefln("press c button - full screen");
-	for(int i1 = 0; i1 < 60; i1++){
-		SDL_Delay(16);
-		SDL_PollEvent(&event);
-		getPAD();
+	version (PANDORA) {
+	} else {
+		writefln("press c button - full screen");
+		for(int i1 = 0; i1 < 60; i1++){
+			SDL_Delay(16);
+			SDL_PollEvent(&event);
+			getPAD();
+		}
 	}
 
 	if(!initVIDEO()){
@@ -205,6 +208,8 @@ int		boot()
 				collision();
 				turn++;
 			}
+			trgs = 0;
+			reps = 0;
 		}
 
 		clearSDL();
