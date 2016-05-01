@@ -109,6 +109,7 @@ void TSKgctrl(int id)
 			replay_data.length = 16;
 			replay_flag = 0;
 			replay_cnt = 0;
+			setTSK(GROUP_00,&TSKluminous);
 			TskBuf[id].step++;
 			break;
 		case	1:
@@ -130,7 +131,6 @@ void TSKgctrl(int id)
 					writefln("%s", replay_file[i]);
 				}
 			}
-			setTSK(GROUP_00,&TSKluminous);
 			setTSK(GROUP_01,&TSKbg00);
 			setTSK(GROUP_08,&TSKbgFrame);
 			setTSK(GROUP_08,&TSKtitle);
