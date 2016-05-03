@@ -337,7 +337,7 @@ int SEQexec(int id, int seq_pnt)
 				int bgm;
 				if(seq_stgexec[seq_pnt+1] == -1){
 					if(initialized == 1){
-						bgm = stg_num;
+						bgm = stg_num % 4;
 						if(stg_num == 3) initialized = 0;
 					}else{
 						do{

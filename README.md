@@ -21,7 +21,7 @@ At the title screen, you can select a game mode.
 
 <hr/>
 
-The game was created by HELLO WORLD PROJECT (Jumpei Isshiki) (http://homepage2.nifty.com/isshiki/prog_win_d.html) and released with BSD 2-Clause License. (See readme.txt/readme_e.txt)
+The game was created by HELLO WORLD PROJECT (Jumpei Isshiki) (http://isk8086.my.coocan.jp/prog_win_d.html) and released with BSD 2-Clause License. (See readme.txt/readme_e.txt)
 
 It uses the libBulletML library by shinichiro.h (http://shinh.skr.jp/libbulletml/index_en.html).
 
