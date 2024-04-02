@@ -50,7 +50,7 @@ void rand_seed(uint seed, uint index)
 
 uint rand()
 {
-    static uint xormix1[20] =
+    static uint[20] xormix1 =
     [
                 0xbaa96887, 0x1e17d32c, 0x03bcdc3c, 0x0f33d1b2,
                 0x76a6491d, 0xc570d85d, 0xe382b1e3, 0x78db4362,
@@ -59,7 +59,7 @@ uint rand()
                 0x3ea5cc8c, 0xd26a0f74, 0xf3a9222b, 0x48aad7e4
     ];
 
-    static uint xormix2[20] =
+    static uint[20] xormix2 =
     [
                 0x4b0f3b58, 0xe874f0c3, 0x6955c5a6, 0x55a7ca46,
                 0x4d9a9d86, 0xfe28a195, 0xb1ca7865, 0x6b235751,
@@ -92,7 +92,7 @@ static this()
 
     try
     {
-        s = TickDuration.currSystemTick().length;
+        s = MonoTime.currTime().ticks;
     }
     catch (Exception o)
     {   // Some error happened - try time() instead

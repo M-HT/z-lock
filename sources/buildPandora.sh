@@ -1,6 +1,6 @@
 #!/bin/sh
 
-FLAGS="-fversion=PANDORA -frelease -fno-section-anchors -c -O2 -pipe"
+FLAGS="-fversion=PANDORA -frelease -fno-section-anchors -c -O2 -Wall -pipe"
 
 rm import/*.o*
 rm phobos/std/*.o*
@@ -16,7 +16,7 @@ $PNDSDK/bin/pandora-gdc $FLAGS randomD1.d
 cd ../..
 
 cd src
-$PNDSDK/bin/pandora-gdc $FLAGS -I../import -I../D1/phobos *.d
+$PNDSDK/bin/pandora-gdc $FLAGS -I../import -I../phobos *.d
 cd ..
 
 $PNDSDK/bin/pandora-gdc -o z-lock -s -Wl,-rpath-link,$PNDSDK/usr/lib -L$PNDSDK/usr/lib -lGL -lSDL_mixer -lmad -lSDL -lts -lbulletml_d -L./lib/arm import/*.o* phobos/std/*.o* src/*.o*

@@ -75,7 +75,7 @@ char[] execTEXT(ref TEXT text)
 		}
 	}
 
-	char tmp[];
+	char[] tmp;
 
 	if(text.step){
 		tmp.length = text.str.length;

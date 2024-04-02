@@ -81,9 +81,9 @@ void configINIT()
 	scope File fd;
 	try {
 		fd.open("config.dat");
-		int read_data1[6];
-		int read_data2[1];
-		int read_data3[2];
+		int[6] read_data1;
+		int[1] read_data2;
+		int[2] read_data3;
 		fd.rawRead(read_data1);
 		if(read_data1[0] > 0x0010) fd.rawRead(read_data2);
 		fd.rawRead(read_data3);
@@ -149,7 +149,7 @@ void configSAVE()
 	scope File fd;
 	try {
 		fd.open("config.dat", "wb");
-		int write_data[9] = [game_ver, game_level, vol_se, vol_music, normal_max, concept_max, original_max, time_mode, attack_mode];
+		int[9] write_data = [game_ver, game_level, vol_se, vol_music, normal_max, concept_max, original_max, time_mode, attack_mode];
 		fd.rawWrite(write_data);
 	} finally {
 		fd.close();

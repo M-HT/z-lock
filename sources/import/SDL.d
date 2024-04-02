@@ -81,7 +81,7 @@ version (Win32) {
     extern(Windows) void* GetModuleHandleA(const char*);
 }
 
-static this()
+extern(D) shared static this()
 {
 	/* Load SDL dynamic link library */
 	if (SDL_Init(SDL_INIT_NOPARACHUTE) < 0)
@@ -91,7 +91,7 @@ static this()
 	}
 }
 
-static ~this()
+extern(D) shared static ~this()
 {
 	SDL_Quit();
 }

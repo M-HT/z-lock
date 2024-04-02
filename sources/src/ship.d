@@ -272,6 +272,7 @@ void TSKship(int id)
 				TskBuf[id].wait--;
 				if(TskBuf[id].cnt) TskBuf[id].alpha += 1.0f / TskBuf[id].cnt;
 			}
+			goto case;
 		case	2:
 			if(g_step == GSTEP_CLEAR){
 				TskBuf[id].tskid |= TSKID_MUTEKI;
@@ -440,7 +441,7 @@ void TSKship(int id)
 		default:
 			if(cmd){
 				cmd.vanish();
-				delete cmd;
+				destroy(cmd);
 				TskBuf[id].bullet_command = null;
 			}
 			clrTSK(id);
@@ -578,7 +579,7 @@ void TSKshipExit(int id)
 
 	TskBuf[id].body_ang.length  = 0;
 	if(cmd){
-		delete cmd;
+		destroy(cmd);
 		TskBuf[id].bullet_command = null;
 	}
 }
@@ -691,7 +692,7 @@ void TSKsshotActive(int id)
 		default:
 			if(cmd){
 				cmd.vanish();
-				delete cmd;
+				destroy(cmd);
 				TskBuf[id].bullet_command = null;
 			}
 			clrTSK(id);
@@ -742,7 +743,7 @@ void TSKsshotExit(int id)
 
 	TskBuf[id].body_ang.length  = 0;
 	if(cmd){
-		delete cmd;
+		destroy(cmd);
 		TskBuf[id].bullet_command = null;
 	}
 }

@@ -40,8 +40,8 @@ private int bgm_test;
 private int bgm_play;
 private int se_test;
 private int voice_test;
-private int rep_flag[9];
-private int rep_data[2];
+private int[9] rep_flag;
+private int[2] rep_data;
 
 void TSKtitle(int id)
 {
@@ -1456,6 +1456,7 @@ void TSKtitleGetReplay(int id)
 					default:
 						assert(false);
 				}
+				break;
 			default:
 				break;
 		}

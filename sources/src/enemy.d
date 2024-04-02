@@ -167,6 +167,7 @@ void TSKtargetLock(int id)
 			TskBuf[id].alpha_add = 0.5f / 15;
 			TskBuf[id].cnt = 15;
 			TskBuf[id].step++;
+			goto case;
 		case	3:
 			if(TskBuf[id].cnt){
 				TskBuf[id].cnt--;
@@ -220,6 +221,7 @@ void TSKtargetLock(int id)
 				TskBuf[id].step = -1;
 				break;
 			}
+			goto case;
 		case	7:
 			if(TskBuf[id].cnt){
 				TskBuf[id].cnt--;
@@ -385,7 +387,7 @@ void TSKtargetLockInt(int id)
 
 void TSKeshotSimple(int id)
 {
-	double	tpos[XY];
+	double[XY]	tpos;
 
 	switch(TskBuf[id].step){
 		case	0:
@@ -530,7 +532,7 @@ void TSKeshotActive(int id)
 		default:
 			if(cmd){
 				cmd.vanish();
-				delete cmd;
+				destroy(cmd);
 				TskBuf[id].bullet_command = null;
 			}
 			clrTSK(id);
@@ -608,7 +610,7 @@ void TSKeshotExit(int id)
 
 	TskBuf[id].body_ang.length	= 0;
 	if(cmd){
-		delete cmd;
+		destroy(cmd);
 		TskBuf[id].bullet_command = null;
 	}
 }
@@ -930,7 +932,7 @@ int destroyEnemyBullet(int id, BulletCommand cmd)
 {
 	if(cmd){
 		cmd.vanish();
-		delete cmd;
+		destroy(cmd);
 		TskBuf[id].bullet_command = null;
 	}
 

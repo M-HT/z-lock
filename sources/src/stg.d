@@ -583,7 +583,7 @@ void SEQenemyBaseTblSet(int id)
 	}
 
 	for(int i = 0; i < seq_enemy.length; i++){
-		seq_enemy[i] = i % max;;
+		seq_enemy[i] = i % max;
 	}
 }
 

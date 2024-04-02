@@ -60,8 +60,8 @@ void TSKboss(int id)
 			TskBuf[id].body_ofs[0][Y] = 0.0f;
 			TskBuf[id].body_ofs[0][Z] = 0.0f;
 			TskBuf[id].body_ofs[0][W] = 0.0f;
-			float pos[XY];
-			float rad[XY];
+			float[XY] pos;
+			float[XY] rad;
 			float ang;
 			ang = cast(float)(Rand() % 10000) / 10000.0f * 2.0f * PI;
 			for(int i = 1; i < TskBuf[id].body_ofs.length; i++){
@@ -177,6 +177,7 @@ void TSKboss(int id)
 			TskBuf[id].ty = TskBuf[id].py + 160.0f;
 			TskBuf[id].wait = 60;
 			TskBuf[id].step--;
+			goto case;
 		case	-2:
 			if(TskBuf[id].wait){
 				if(TskBuf[id].pal_cnt){
@@ -240,6 +241,7 @@ void TSKboss(int id)
 				}
 			}
 			TskBuf[id].step--;
+			goto case;
 		case	-4:
 			if(TskBuf[id].wait){
 				if(TskBuf[id].pal_cnt){
@@ -480,7 +482,7 @@ void TSKbossOptionExit(int id)
 
 	if(cmd){
 		cmd.vanish();
-		delete cmd;
+		destroy(cmd);
 		TskBuf[id].bullet_command = null;
 	}
 }

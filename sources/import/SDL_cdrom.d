@@ -68,7 +68,7 @@ struct SDL_CD {
 	int numtracks;		/* Number of tracks on disk */
 	int cur_track;		/* Current track position */
 	int cur_frame;		/* Current frame offset within current track */
-	SDL_CDtrack track[SDL_MAX_TRACKS+1];
+	SDL_CDtrack[SDL_MAX_TRACKS+1] track;
 }
 
 /* Conversion functions from frames to Minute/Second/Frames and vice versa */

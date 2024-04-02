@@ -32,7 +32,7 @@ struct SDL_Cursor {
 	Sint16 hot_x, hot_y;		/* The "tip" of the cursor */
 	Uint8 *data;			/* B/W cursor data */
 	Uint8 *mask;			/* B/W cursor mask */
-	Uint8 *save[2];			/* Place to save cursor area */
+	Uint8*[2] save;			/* Place to save cursor area */
 	void /*WMcursor*/ *wm_cursor;		/* Window-manager cursor */
 }
 
@@ -61,14 +61,14 @@ void SDL_WarpMouse(Uint16 x, Uint16 y);
 /*
  * Create a cursor using the specified data and mask (in MSB format).
  * The cursor width must be a multiple of 8 bits.
- * 
+ *
  * The cursor is created in black and white according to the following:
  * data  mask    resulting pixel on screen
  *  0     1       White
  *  1     1       Black
  *  0     0       Transparent
  *  1     0       Inverted color if possible, black if not.
- * 
+ *
  * Cursors created with this function must be freed with SDL_FreeCursor().
  */
 SDL_Cursor *SDL_CreateCursor
@@ -76,7 +76,7 @@ SDL_Cursor *SDL_CreateCursor
 
 /*
  * Set the currently active cursor to the specified one.
- * If the cursor is currently visible, the change will be immediately 
+ * If the cursor is currently visible, the change will be immediately
  * represented on the display.
  */
 void SDL_SetCursor(SDL_Cursor *cursor);
