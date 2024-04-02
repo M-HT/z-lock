@@ -7,7 +7,7 @@
 */
 
 private	import	std.math;
-private	import	SDL;
+private	import	bindbc.sdl;
 private	import	opengl;
 private	import	util_sdl;
 

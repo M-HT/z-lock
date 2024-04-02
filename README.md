@@ -21,12 +21,12 @@ At the title screen, you can select a game mode.
 
 <hr/>
 
-The game was created by HELLO WORLD PROJECT (Jumpei Isshiki) (http://isk8086.my.coocan.jp/prog_win_d.html) and released with BSD 2-Clause License. (See readme.txt/readme_e.txt)
+The game was created by [HELLO WORLD PROJECT (Jumpei Isshiki)](https://web.archive.org/web/20170507115557/http://isk8086.my.coocan.jp/prog_win_d.html "HELLO WORLD PROJECT (Jumpei Isshiki)") and released with BSD 2-Clause License. (See readme.txt/readme_e.txt)
 
-It uses the libBulletML library by shinichiro.h (http://shinh.skr.jp/libbulletml/index_en.html).
+This fork is a port to D version 2, Linux, SDL2, Pandora, DragonBox Pyra.
 
-This fork is a port to D version 2, Linux, Pandora.
+It uses the [libBulletML](https://shinh.skr.jp/libbulletml/index_en.html "libBulletML") library by shinichiro.h.
 
 It uses std.random module from D version 1, ported to D version 2, which is under zlib/libpng License (See phoboslicense.txt in sources/phobos directory).
 
-The Pandora release uses ptitSeb's fork of glshim - https://github.com/ptitSeb/glshim
+It uses [BindBC-SDL](https://github.com/BindBC/bindbc-sdl "BindBC-SDL") (D bindings to SDL), which is under [Boost Software License](https://www.boost.org/LICENSE_1_0.txt "Boost Software License").

@@ -8,8 +8,7 @@
 
 private	import	std.string;
 private	import	std.stdio;
-private	import	SDL;
-private	import	SDL_mixer;
+private	import	bindbc.sdl;
 private	import	define;
 
 enum{
@@ -47,7 +46,7 @@ int initSND(int mch, int sch)
     }
 
     int audio_rate;
-    Uint16	audio_format;
+    ushort audio_format;
     int audio_channels;
     int audio_buffers;
 
@@ -55,10 +54,24 @@ int initSND(int mch, int sch)
 	audio_format = AUDIO_S16;
 	audio_channels = SND_CHANNEL;
 	audio_buffers = SND_BUFFER;
-	if(Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0){
-		sound_use = false;
-	}else{
-		sound_use = true;
+	bool sound_opened = false;
+	static if(SDL_MIXER_VERSION_ATLEAST(2, 0, 2)){
+		const SDL_version *link_version = Mix_Linked_Version();
+		if (SDL_version(link_version.major, link_version.minor, link_version.patch) >= SDL_version(2, 0, 2)){
+			sound_opened = true;
+			if(Mix_OpenAudioDevice(audio_rate, audio_format, audio_channels, audio_buffers, null, 0xff) < 0){
+				sound_use = false;
+			}else{
+				sound_use = true;
+			}
+		}
+	}
+	if (!sound_opened){
+		if(Mix_OpenAudio(audio_rate, audio_format, audio_channels, audio_buffers) < 0){
+			sound_use = false;
+		}else{
+			sound_use = true;
+		}
 	}
 	Mix_QuerySpec(&audio_rate, &audio_format, &audio_channels);
 

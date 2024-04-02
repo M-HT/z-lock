@@ -17,7 +17,6 @@ private	const int	LUMINOUS_TEXTURE_WIDTH_MAX = 64;
 private	const int	LUMINOUS_TEXTURE_HEIGHT_MAX = 64;
 private	GLuint[LUMINOUS_TEXTURE_WIDTH_MAX * LUMINOUS_TEXTURE_HEIGHT_MAX * 4 * uint.sizeof] td;
 private	int			luminousTextureWidth = 64, luminousTextureHeight = 64;
-private	int			screenWidth, screenHeight, screenStartx, screenStarty;
 private	float		luminous;
 
 private	int[2][5]	lmOfs = [[0, 0], [1, 0], [-1, 0], [0, 1], [0, -1]];
@@ -37,7 +36,7 @@ void TSKluminous(int id)
 		    glDisable(GL_DEPTH_TEST);
 		    glDisable(GL_TEXTURE_2D);
 		    glDisable(GL_COLOR_MATERIAL);
-			init(0.0f, util_sdl.startx, util_sdl.starty, SCREEN_X, SCREEN_Y);
+			init(0.0f);
 			TskBuf[id].fp_draw = &TSKluminousDraw;
 			TskBuf[id].step++;
 			break;
@@ -59,13 +58,10 @@ void TSKluminousDraw(int id)
 
 /*----------------------------------------------------------------------------*/
 
-static void init(float lumi, int startx, int starty, int width, int height)
+static void init(float lumi)
 {
 	makeLuminousTexture();
 	luminous = lumi;
-	screenStartx = startx;
-	screenStarty = starty;
-	resized(width, height);
 }
 
 static void makeLuminousTexture()
@@ -82,12 +78,6 @@ static void makeLuminousTexture()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-static void resized(int width, int height)
-{
-	screenWidth = width;
-	screenHeight = height;
-}
-
 static void close()
 {
 	glDeleteTextures(1, &luminousTexture);
@@ -102,7 +92,7 @@ static void endRenderToTexture()
 {
 	glBindTexture(GL_TEXTURE_2D, luminousTexture);
 	glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 0, 0, luminousTextureWidth, luminousTextureHeight, 0);
-	glViewport(screenStartx + (SCREEN_X / 2) - screenWidth / 2, screenStarty + (SCREEN_Y / 2) - screenHeight / 2, screenWidth, screenHeight);
+	glViewport(util_sdl.screenStartx, util_sdl.screenStarty, util_sdl.screenWidth, util_sdl.screenHeight);
 }
 
 static void viewOrtho()
@@ -110,7 +100,7 @@ static void viewOrtho()
 	glMatrixMode(GL_PROJECTION);
 	glPushMatrix();
 	glLoadIdentity();
-	glOrtho(0, screenWidth, screenHeight, 0, -1, 1);
+	glOrtho(0, SCREEN_X, SCREEN_Y, 0, -1, 1);
 	glMatrixMode(GL_MODELVIEW);
 	glPushMatrix();
 	glLoadIdentity();
@@ -135,11 +125,11 @@ static void draw()
 		glTexCoord2f(0, 1);
 		glVertex2f(0 + lmOfs[i][0] * lmOfsBs, 0 + lmOfs[i][1] * lmOfsBs);
 		glTexCoord2f(0, 0);
-		glVertex2f(0 + lmOfs[i][0] * lmOfsBs, screenHeight + lmOfs[i][1] * lmOfsBs);
+		glVertex2f(0 + lmOfs[i][0] * lmOfsBs, SCREEN_X + lmOfs[i][1] * lmOfsBs);
 		glTexCoord2f(1, 0);
-		glVertex2f(screenWidth + lmOfs[i][0] * lmOfsBs, screenHeight + lmOfs[i][0] * lmOfsBs);
+		glVertex2f(SCREEN_X + lmOfs[i][0] * lmOfsBs, SCREEN_Y + lmOfs[i][0] * lmOfsBs);
 		glTexCoord2f(1, 1);
-		glVertex2f(screenWidth + lmOfs[i][0] * lmOfsBs, 0 + lmOfs[i][0] * lmOfsBs);
+		glVertex2f(SCREEN_X + lmOfs[i][0] * lmOfsBs, 0 + lmOfs[i][0] * lmOfsBs);
     }
 	glEnd();
 	viewPerspective();

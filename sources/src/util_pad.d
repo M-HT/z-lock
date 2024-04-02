@@ -6,8 +6,11 @@
 	2003/12/02 jumpei isshiki
 */
 
-private	import	SDL;
+private	import	bindbc.sdl;
 private	import	std.conv;
+
+version(PANDORA) version = PANDORA_OR_PYRA;
+version(PYRA) version = PANDORA_OR_PYRA;
 
 enum{
 	PAD_UP = 0x01,
@@ -39,7 +42,7 @@ int	trgs;
 int	reps;
 
 SDL_Joystick*	joys;
-Uint8*			keys;
+ubyte*			keys;
 
 private	int	pads_old;
 private	int	rep_cnt;
@@ -53,8 +56,9 @@ int initPAD()
 	joys = null;
 	version (PANDORA) {
 		foreach (i; 0..SDL_NumJoysticks()) {
-			if (to!string(SDL_JoystickName(i)) == "nub0") {
+			if (to!string(SDL_JoystickNameForIndex(i)) == "nub0") {
 				joys = SDL_JoystickOpen(i);
+				break;
 			}
 		}
 	} else {
@@ -79,8 +83,9 @@ int initPAD()
 
 void closePAD()
 {
-	if(SDL_JoystickOpened(0)){
+	if(joys){
 		SDL_JoystickClose(joys);
+		joys = null;
 	}
 }
 
@@ -89,51 +94,54 @@ int getPAD()
 	int x = 0, y = 0;
 	int pad = 0;
 
-	keys = SDL_GetKeyState(null);
+	keys = SDL_GetKeyboardState(null);
 
 	if(joys){
 		x = SDL_JoystickGetAxis(joys, 0);
 		y = SDL_JoystickGetAxis(joys, 1);
 	}
-	if(keys[SDLK_RIGHT] == SDL_PRESSED || keys[SDLK_KP6] == SDL_PRESSED || keys[SDLK_d] == SDL_PRESSED || x > JOYSTICK_AXIS){
+	if(keys[SDL_SCANCODE_RIGHT] == SDL_PRESSED || keys[SDL_SCANCODE_KP_6] == SDL_PRESSED || keys[SDL_SCANCODE_D] == SDL_PRESSED || x > JOYSTICK_AXIS){
 		pad |= PAD_RIGHT;
 	}
-	if(keys[SDLK_LEFT] == SDL_PRESSED || keys[SDLK_KP4] == SDL_PRESSED || keys[SDLK_a] == SDL_PRESSED || x < -JOYSTICK_AXIS){
+	if(keys[SDL_SCANCODE_LEFT] == SDL_PRESSED || keys[SDL_SCANCODE_KP_4] == SDL_PRESSED || keys[SDL_SCANCODE_A] == SDL_PRESSED || x < -JOYSTICK_AXIS){
 		pad |= PAD_LEFT;
 	}
-	if(keys[SDLK_DOWN] == SDL_PRESSED || keys[SDLK_KP2] == SDL_PRESSED || keys[SDLK_s] == SDL_PRESSED || y > JOYSTICK_AXIS){
+	if(keys[SDL_SCANCODE_DOWN] == SDL_PRESSED || keys[SDL_SCANCODE_KP_2] == SDL_PRESSED || keys[SDL_SCANCODE_S] == SDL_PRESSED || y > JOYSTICK_AXIS){
 		pad |= PAD_DOWN;
 	}
-	if(keys[SDLK_UP] == SDL_PRESSED || keys[SDLK_KP8] == SDL_PRESSED || keys[SDLK_w] == SDL_PRESSED || y < -JOYSTICK_AXIS){
+	if(keys[SDL_SCANCODE_UP] == SDL_PRESSED || keys[SDL_SCANCODE_KP_8] == SDL_PRESSED || keys[SDL_SCANCODE_W] == SDL_PRESSED || y < -JOYSTICK_AXIS){
 		pad |= PAD_UP;
 	}
 
 	int	btn1 = 0, btn2 = 0, btn3 = 0, btn4 = 0, btn5 = 0, btn6 = 0, btn7 = 0, btn8 = 0, btn9 = 0;
 
-	if(joys){
-		btn1 = SDL_JoystickGetButton(joys, 0);
-		btn2 = SDL_JoystickGetButton(joys, 1);
-		btn3 = SDL_JoystickGetButton(joys, 2);
-		debug{
-			btn4 = SDL_JoystickGetButton(joys, 3);
-			btn5 = SDL_JoystickGetButton(joys, 4);
-			btn6 = SDL_JoystickGetButton(joys, 5);
-			btn7 = SDL_JoystickGetButton(joys, 6);
-			btn8 = SDL_JoystickGetButton(joys, 7);
+	version(PYRA){
+	}else{
+		if(joys){
+			btn1 = SDL_JoystickGetButton(joys, 0);
+			btn2 = SDL_JoystickGetButton(joys, 1);
+			btn3 = SDL_JoystickGetButton(joys, 2);
+			debug{
+				btn4 = SDL_JoystickGetButton(joys, 3);
+				btn5 = SDL_JoystickGetButton(joys, 4);
+				btn6 = SDL_JoystickGetButton(joys, 5);
+				btn7 = SDL_JoystickGetButton(joys, 6);
+				btn8 = SDL_JoystickGetButton(joys, 7);
+			}
 		}
 	}
-	version (PANDORA) {
-		if(keys[SDLK_HOME] == SDL_PRESSED || keys[SDLK_PAGEUP] == SDL_PRESSED || btn1){
+	version(PANDORA_OR_PYRA) {
+		if(keys[SDL_SCANCODE_HOME] == SDL_PRESSED || keys[SDL_SCANCODE_PAGEUP] == SDL_PRESSED || btn1){
 			pad |= PAD_BUTTON1;
 		}
-		if(keys[SDLK_PAGEDOWN] == SDL_PRESSED || keys[SDLK_END] == SDL_PRESSED || btn2){
+		if(keys[SDL_SCANCODE_PAGEDOWN] == SDL_PRESSED || keys[SDL_SCANCODE_END] == SDL_PRESSED || btn2){
 			pad |= PAD_BUTTON2;
 		}
 	} else {
-		if(keys[SDLK_z] == SDL_PRESSED || keys[SDLK_SLASH] == SDL_PRESSED || btn1){
+		if(keys[SDL_SCANCODE_Z] == SDL_PRESSED || keys[SDL_SCANCODE_SLASH] == SDL_PRESSED || btn1){
 			pad |= PAD_BUTTON1;
 		}
-		if(keys[SDLK_x] == SDL_PRESSED || keys[SDLK_BACKSLASH] == SDL_PRESSED || btn2){
+		if(keys[SDL_SCANCODE_X] == SDL_PRESSED || keys[SDL_SCANCODE_BACKSLASH] == SDL_PRESSED || btn2){
 			pad |= PAD_BUTTON2;
 		}
 	}
@@ -141,23 +149,23 @@ int getPAD()
 		pad |= PAD_BUTTON3;
 	}
 	debug{
-		if(keys[SDLK_c] == SDL_PRESSED || btn4){
+		if(keys[SDL_SCANCODE_C] == SDL_PRESSED || btn4){
 			pad |= PAD_BUTTON4;
 		}
-		if(keys[SDLK_v] == SDL_PRESSED || btn5){
+		if(keys[SDL_SCANCODE_V] == SDL_PRESSED || btn5){
 			pad |= PAD_BUTTON5;
 		}
-		if(keys[SDLK_b] == SDL_PRESSED || btn6){
+		if(keys[SDL_SCANCODE_B] == SDL_PRESSED || btn6){
 			pad |= PAD_BUTTON6;
 		}
-		if(keys[SDLK_f] == SDL_PRESSED || btn7){
+		if(keys[SDL_SCANCODE_F] == SDL_PRESSED || btn7){
 			pad |= PAD_BUTTON7;
 		}
-		if(keys[SDLK_g] == SDL_PRESSED || btn8){
+		if(keys[SDL_SCANCODE_G] == SDL_PRESSED || btn8){
 			pad |= PAD_BUTTON8;
 		}
 	}
-	if(keys[SDLK_ESCAPE] == SDL_PRESSED || btn9){
+	if(keys[SDL_SCANCODE_ESCAPE] == SDL_PRESSED || btn9){
 		pad |= PAD_BUTTON9;
 	}
 

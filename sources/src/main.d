@@ -14,7 +14,7 @@ private	import	std.stdio;
 private	import	std.string;
 private	import	std.randomD1;
 private	import	std.conv;
-private	import	SDL;
+private	import	bindbc.sdl;
 private	import	opengl;
 private	import	util_sdl;
 private	import	util_glbf;
@@ -28,6 +28,9 @@ private	import	task;
 private	import	sysinfo;
 private	import	gctrl;
 private	import	ship;
+
+version(PANDORA) version = FORCE_FULLSCREEN;
+version(PYRA) version = FORCE_FULLSCREEN;
 
 GLBitmapFont font;
 
@@ -107,7 +110,7 @@ int		boot()
 	}
 
 	/* 起動用パッドを取得 */
-	version (PANDORA) {
+	version(FORCE_FULLSCREEN) {
 	} else {
 		writefln("press c button - full screen");
 		for(int i1 = 0; i1 < 60; i1++){

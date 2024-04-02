@@ -9,7 +9,7 @@
 private	import	std.stdio;
 private	import	std.string;
 private	import	std.math;
-private	import	SDL;
+private	import	bindbc.sdl;
 private	import	opengl;
 private	import	util_sdl;
 private	import	util_pad;

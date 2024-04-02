@@ -8,7 +8,7 @@
 private	import	std.stdio;
 private	import	std.string;
 private	import	std.math;
-private	import	SDL;
+private	import	bindbc.sdl;
 private	import	opengl;
 private	import	util_sdl;
 
@@ -28,9 +28,9 @@ private GLfloat rate_height;
 
 private SDL_Surface* LoadBMP(const char* filename)
 {
-	Uint8* rowhi, rowlo;
-	Uint8[] tmpbuf;
-	Uint8 tmpch;
+	ubyte* rowhi, rowlo;
+	ubyte[] tmpbuf;
+	ubyte tmpch;
 	SDL_Surface* image;
 	int i, j;
 
@@ -46,7 +46,7 @@ private SDL_Surface* LoadBMP(const char* filename)
 		writefln("Out of memory");
 		return	null;
 	}
-	rowhi = cast(Uint8*)image.pixels;
+	rowhi = cast(ubyte*)image.pixels;
 	rowlo = rowhi + (image.h * image.pitch) - image.pitch;
 	for(i = 0; i < image.h / 2; ++i){
 		for(j = 0; j < image.w; ++j){

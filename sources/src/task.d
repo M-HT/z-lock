@@ -6,7 +6,7 @@
 	2003/11/27 jumpei isshiki
 */
 
-private	import	SDL;
+private	import	bindbc.sdl;
 private	import	util_sdl;
 private	import	bulletml;
 private	import	bulletcommand;

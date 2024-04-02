@@ -8,10 +8,13 @@
 
 private	import	std.stdio;
 private	import	std.string;
-private	import	SDL;
+private	import	bindbc.sdl;
 private	import	opengl;
 private	import	util_pad;
 private	import	define;
+
+version(PANDORA) version = FORCE_FULLSCREEN;
+version(PYRA) version = FORCE_FULLSCREEN;
 
 enum{
 	SURFACE_MAX = 100,
@@ -43,6 +46,8 @@ struct VEC_POS {
 	float	pz;
 }
 
+SDL_Window*	window;
+SDL_GLContext	context;
 SDL_Surface*	primary;
 SDL_Surface*[]	offscreen;
 
@@ -50,10 +55,10 @@ const float	BASE_Z = 2.0f;
 float		cam_scr = -0.75f;
 float		cam_pos;
 
+int	screenWidth, screenHeight, screenStartx, screenStarty;
+
 private	int width = SCREEN_X;
 private	int height = SCREEN_Y;
-public	int startx = 0;
-public	int starty = 0;
 private	float nearPlane = 0.0f;
 private	float farPlane = 1000.0f;
 private	GLuint TEXTURE_NONE = 0xffffffff;
@@ -77,32 +82,29 @@ void closeSDL()
 
 int initVIDEO()
 {
-	Uint32	videoFlags;
+	uint	videoFlags;
 
-	videoFlags = SDL_OPENGL;
-	version (PANDORA) {
-		videoFlags |= SDL_FULLSCREEN;
+	videoFlags = SDL_WINDOW_OPENGL;
+	version(FORCE_FULLSCREEN) {
+		videoFlags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
 	} else {
 		debug{
 			if((pads & PAD_BUTTON1)){
-				videoFlags = SDL_OPENGL | SDL_FULLSCREEN;
+				videoFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP;
 			}else{
-				videoFlags = SDL_OPENGL | SDL_RESIZABLE;
+				videoFlags = SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE;
 			}
 		}
 	}
-	int physical_width = width;
-	int physical_height = height;
-	version (PANDORA) {
-		physical_width = 800;
-		physical_height = 480;
-		startx = (800 - width) / 2;
-		starty = (480 - height) / 2;
-	}
-	primary = SDL_SetVideoMode(physical_width, physical_height, 0, videoFlags);
-	if(primary == null){
+	window = SDL_CreateWindow(std.string.toStringz(PROJECT_NAME), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, videoFlags);
+	if(window == null){
 		return	0;
-    }
+	}
+	context = SDL_GL_CreateContext(window);
+	if(context == null){
+		SDL_DestroyWindow(window);
+		return	0;
+	}
 
 	offscreen.length = SURFACE_MAX;
 	tex_bank.length  = SURFACE_MAX;
@@ -112,10 +114,8 @@ int initVIDEO()
 	}
 
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    resizedSDL(width, height);
+	resizedSDL(width, height);
 	SDL_ShowCursor(SDL_DISABLE);
-
-	SDL_WM_SetCaption(std.string.toStringz(PROJECT_NAME), null);
 
 	return	1;
 }
@@ -132,6 +132,8 @@ void closeVIDEO()
 			writefln("free off-screen surface %d.",i);
 		}
 	}
+	SDL_GL_DeleteContext(context);
+	SDL_DestroyWindow(window);
 }
 
 void readSDLtexture(const char[] fname, int bank)
@@ -159,12 +161,40 @@ void clearSDL()
 void flipSDL()
 {
 	glFlush();
-	SDL_GL_SwapBuffers();
+	SDL_GL_SwapWindow(window);
 }
 
 void resizedSDL(int w, int h)
 {
-	glViewport(startx, starty, w, h);
+	screenStartx = 0;
+	screenStarty = 0;
+	screenWidth = w;
+	screenHeight = h;
+	static if(SDL_VERSION_ATLEAST(2, 0, 1)) {
+		SDL_version linked;
+		SDL_GetVersion(&linked);
+		if (SDL_version(linked.major, linked.minor, linked.patch) >= SDL_version(2, 0, 1)) {
+			int glwidth, glheight;
+			SDL_GL_GetDrawableSize(window, &glwidth, &glheight);
+			if (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN_DESKTOP) {
+				if ((cast(float)(glwidth)) / w <= (cast(float)(glheight)) / h) {
+					screenStartx = 0;
+					screenWidth = glwidth;
+					screenHeight = (glwidth * h) / w;
+					screenStarty = (glheight - screenHeight) / 2;
+				} else {
+					screenStarty = 0;
+					screenHeight = glheight;
+					screenWidth = (glheight * w) / h;
+					screenStartx = (glwidth - screenWidth) / 2;
+				}
+			} else {
+				screenWidth = glwidth;
+				screenHeight = glheight;
+			}
+		}
+	}
+	glViewport(screenStartx, screenStarty, screenWidth, screenHeight);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	if (nearPlane != 0.0f) {
