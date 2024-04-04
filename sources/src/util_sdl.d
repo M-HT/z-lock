@@ -48,7 +48,6 @@ struct VEC_POS {
 
 SDL_Window*	window;
 SDL_GLContext	context;
-SDL_Surface*	primary;
 SDL_Surface*[]	offscreen;
 
 const float	BASE_Z = 2.0f;

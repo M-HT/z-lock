@@ -125,7 +125,7 @@ static void draw()
 		glTexCoord2f(0, 1);
 		glVertex2f(0 + lmOfs[i][0] * lmOfsBs, 0 + lmOfs[i][1] * lmOfsBs);
 		glTexCoord2f(0, 0);
-		glVertex2f(0 + lmOfs[i][0] * lmOfsBs, SCREEN_X + lmOfs[i][1] * lmOfsBs);
+		glVertex2f(0 + lmOfs[i][0] * lmOfsBs, SCREEN_Y + lmOfs[i][1] * lmOfsBs);
 		glTexCoord2f(1, 0);
 		glVertex2f(SCREEN_X + lmOfs[i][0] * lmOfsBs, SCREEN_Y + lmOfs[i][0] * lmOfsBs);
 		glTexCoord2f(1, 1);
