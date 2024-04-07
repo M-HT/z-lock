@@ -115,7 +115,7 @@ int		boot()
 		writefln("press c button - full screen");
 		for(int i1 = 0; i1 < 60; i1++){
 			SDL_Delay(16);
-			SDL_PollEvent(&event);
+			while (SDL_PollEvent(&event)){}
 			getPAD();
 		}
 	}
@@ -150,9 +150,13 @@ int		boot()
 	setTSK(GROUP_00,&TSKgctrl);
 
 	while(game_exec){
-		SDL_PollEvent(&event);
+		while (game_exec && SDL_PollEvent(&event)){
+			if(event.type == SDL_QUIT){
+				game_exec = 0;
+			}
+		}
 		getPAD();
-		if((game_exec == 1 && (trgs & PAD_BUTTON9)) || event.type == SDL_QUIT){
+		if(game_exec == 1 && (trgs & PAD_BUTTON9)){
 			game_exec = 0;
 		}
 		if(!pause && game_exec == 2 && (trgs & PAD_BUTTON9)){
